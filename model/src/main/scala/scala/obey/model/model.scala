@@ -31,7 +31,8 @@ package object model {
       //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
       //val associatedGtree = scratchpads.values.toList.head.asInstanceOf[List[_]].collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
       val scratchpad = t.asInstanceOf[{ def internalScratchpad: Seq[Any] }].internalScratchpad
-      val associatedGtree = scratchpad.collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
+      val associatedOriginal = scratchpad.collect { case x: Product if x.productPrefix == "Original" => x }.head
+      val associatedGtree = associatedOriginal.asInstanceOf[{ def goriginal: Any }].goriginal.asInstanceOf[scala.reflect.internal.SymbolTable#Tree]
       associatedGtree.pos
     } catch {
       case e: Exception => NoPosition
