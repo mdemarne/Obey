@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 import complete.DefaultParsers._
 
-object obeyplugin extends AutoPlugin {
+object ObeyPlugin extends AutoPlugin {
   val obeyFix = settingKey[String]("List of tags to filter rewritting rules.")
   val obeyWarn = settingKey[String]("List of tags to filter warning rules.")
   val obeyRules = settingKey[String]("Path to .class defined by the user.")
@@ -52,7 +52,7 @@ object obeyplugin extends AutoPlugin {
     obeyWarn := "",
     obeyRules := "project/rules/target/scala-2.11/classes/",
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
-    addCompilerPlugin("com.github.mdemarne" % "plugin_2.11.6" % "0.1.0-SNAPSHOT"),
+    addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(
       "-P:obey:fix:" + obeyFix.value,
       "-P:obey:warn:" + obeyWarn.value,

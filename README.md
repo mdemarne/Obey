@@ -5,7 +5,7 @@ Obey is  a linter tool for Scala. Obey enables to define rules, based on scala.m
 
 In order to use the Obey as a compiler plugin, that runs a phase called 'obey', use the following line:
 ~~~
-addCompilerPlugin("com.github.mdemarne" % "plugin_2.11.6" % "0.1.0­-SNAPSHOT")
+addCompilerPlugin("com.github.mdemarne" % "sbt-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT")
 ~~~
 The compiler plugin defines the following options:
 * all:<OFL> enables to apply a filter on the entire set of rules considered
@@ -28,11 +28,11 @@ selects all the rules that have a tag/name begining by List or equal to Set, whi
 
 In order to use Obey as an SBT autoplugin, use the following line:
 ~~~
-addSbtPlugin("com.github.mdemarne" %% "sbt­-obeyplugin" % "0.1­.0-SNAPSHOT")
+addSbtPlugin("com.github.mdemarne" %% "sbt­obey" % "0.1­0-SNAPSHOT")
 ~~~
 
 and
 ~~~
-lazy val myProject = Project(...) enablePlugins(obeyplugin)
+lazy val myProject = Project(...) enablePlugins(obey)
 ~~~
  For an example of how to use Obey, refer to the IObey project or the demo-obey one on my github.
