@@ -7,10 +7,9 @@ object Persist {
   /* Renames the file as .scala.old */
   def archive(path: String): Unit = {
     val oldF = new File(path)
-    if(!oldF.exists())
-      throw new IOException(s"Error: archive's file ${path} does not exists")
-    // val newF = new File(path+".old")
-    // oldF.renameTo(newF)
+    if(!oldF.exists()) throw new IOException(s"Error: archive's file ${path} does not exists")
+    val newF = new File(path+".old")
+    oldF.renameTo(newF)
     oldF.delete()
   }
 
@@ -26,8 +25,7 @@ object Persist {
   /* Absolute name required */
   def persist(name: String, tree: String): Unit = {
     val f = new File(name)
-    if(f.exists())
-      throw new IOException(s"Error: file to persist ${name} already exists")
+    if(f.exists()) throw new IOException(s"Error: file to persist ${name} already exists")
     val w = new BufferedWriter(new FileWriter(name))
     w.write(tree)
     // TODO: That's where things should be changed; we want to re-print the tree while keeping other thinfs
