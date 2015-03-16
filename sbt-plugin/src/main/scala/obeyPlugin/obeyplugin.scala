@@ -50,7 +50,7 @@ object obeyplugin extends AutoPlugin {
   override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
     obeyFix := "",
     obeyWarn := "",
-    obeyRules := "",
+    obeyRules := "project/rules/target/scala-2.11/classes/",
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(

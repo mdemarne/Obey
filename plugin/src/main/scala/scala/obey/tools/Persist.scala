@@ -9,8 +9,9 @@ object Persist {
     val oldF = new File(path)
     if(!oldF.exists())
       throw new IOException(s"Error: archive's file ${path} does not exists")
-    val newF = new File(path+".old")
-    oldF.renameTo(newF)
+    // val newF = new File(path+".old")
+    // oldF.renameTo(newF)
+    oldF.delete()
   }
 
   /* Takes .scala.old and strips the .old */
