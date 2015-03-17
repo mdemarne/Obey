@@ -21,7 +21,14 @@ object Settings {
 
   /* Forcing version to be the same for the SBT plugin and for model and plugin. */
   lazy val sbtPluginSettings: Seq[sbt.Def.Setting[_]] = Defaults.defaultSettings ++ Seq(
-    version := metaVersion
+    version := metaVersion,
+    organization := "org.obey",
+    description := "Code Health sbt plugin for scalameta trees",
+    resolvers += Resolver.sonatypeRepo("snapshots"),
+    resolvers += Resolver.sonatypeRepo("releases"),
+    scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked"),
+    parallelExecution in Test := false, // hello, reflection sync!!
+    logBuffered := false
   ) ++ PublishSettings.publishSettings
 
   lazy val flatLayout: Seq[sbt.Def.Setting[_]] = assemblySettings ++ Seq(

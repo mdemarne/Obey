@@ -12,7 +12,7 @@ object build extends Build {
       Dependencies.scalatest))
   )
 
-  lazy val plugin = Project(
+  lazy val pluginCompiler = Project(
     id = "compiler-plugin",
     base = file("compiler-plugin"),
     settings = sharedSettings ++ publishableSettings ++ commonDependencies ++ mergeDependencies ++ List(
@@ -31,7 +31,7 @@ object build extends Build {
       name := "obey-model"
     ))
 
-  lazy val sbtPlug: Project = Project(
+  lazy val pluginSbt = Project(
     id = "sbt-plugin",
     base = file("sbt-plugin"),
     settings = sbtPluginSettings ++ publishableSettings ++ List(sbtPlugin := true, name := "sbt-obey"))

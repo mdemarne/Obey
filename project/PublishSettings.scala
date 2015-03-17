@@ -5,37 +5,37 @@ object PublishSettings {
 	def publishSettings = Seq(
 		organization := "com.github.mdemarne",
 		publishMavenStyle := true,
-	    publishOnlyWhenOnMaster := publishOnlyWhenOnMasterImpl.value,
-	    publishTo <<= version { v: String =>
-	      val nexus = "https://oss.sonatype.org/"
-	      if (v.trim.endsWith("SNAPSHOT"))
-	        Some("snapshots" at nexus + "content/repositories/snapshots")
-	      else
-	        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-	    },
-	    pomIncludeRepository := { x => false },
-	    publishArtifact in Compile := false,
-	    publishArtifact in Test := false,
-	    pomExtra := (
-	      <url>https://github.com/mdemarne/Obey</url>
-	      <inceptionYear>2015</inceptionYear>
-	      <licenses>
-	        <license>
-	          <name>BSD-like</name>
-	          <url>http://www.scala-lang.org/downloads/license.html</url>
-	          <distribution>repo</distribution>
-	        </license>
-	      </licenses>
-	      <scm>
-	        <url>git://github.com/mdemarne/Obey.git</url>
-	        <connection>scm:git:git://github.com/mdemarne/Obey.git</connection>
-	      </scm>
-	      <issueManagement>
-	        <system>GitHub</system>
-	        <url>https://github.com/mdemarne/Obey/issues</url>
-	      </issueManagement>
-	    ),
-	    publishArtifact in (Compile, packageDoc) := false
+    publishOnlyWhenOnMaster := publishOnlyWhenOnMasterImpl.value,
+    publishTo <<= version { v: String =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT"))
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    pomIncludeRepository := { x => false },
+    publishArtifact in Compile := false,
+    publishArtifact in Test := false,
+    pomExtra := (
+      <url>https://github.com/mdemarne/Obey</url>
+      <inceptionYear>2015</inceptionYear>
+      <licenses>
+        <license>
+          <name>BSD-like</name>
+          <url>http://www.scala-lang.org/downloads/license.html</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <url>git://github.com/mdemarne/Obey.git</url>
+        <connection>scm:git:git://github.com/mdemarne/Obey.git</connection>
+      </scm>
+      <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/mdemarne/Obey/issues</url>
+      </issueManagement>
+    ),
+    publishArtifact in (Compile, packageDoc) := false
 	)
 
  lazy val publishOnlyWhenOnMaster = taskKey[Unit]("publish task for Travis (don't publish when building pull requests, only publish when the build is triggered by merge into master)")
