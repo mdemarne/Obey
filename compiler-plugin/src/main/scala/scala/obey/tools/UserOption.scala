@@ -25,6 +25,8 @@ object UserOption {
   /* Avoids traversing the tree twice for format and warnings */
   def getReport: Set[Rule] = getRules(report) -- getFormat
 
+  def noRulesToApply: Boolean = this.getRules(format).isEmpty && this.getRules(report).isEmpty
+
   def addTags(opts: String): Unit = optMap.find(e => opts.startsWith(e._1)) match {
     case Some((_, h)) if opts.contains("--") => 
       h.use = false

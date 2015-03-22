@@ -35,4 +35,11 @@ and
 ~~~
 lazy val myProject = Project(...) enablePlugins(ObeyPlugin)
 ~~~
- For an example of how to use Obey, refer to the IObey project or the demo-obey one on my github.
+
+You can then set some setting keys in your project properties in order to select the rule tags you want to apply. The syntax used is the same as for the compiler plugin:
+
+- val obeyFixTags = settingKey[String]("List of tags to filter rewritting rules.")
+- val obeyWarnTags = settingKey[String]("List of tags to filter warning rules.")
+- val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
+    
+For an example of how to use Obey, refer to the [Obey-examples](https://github.com/mdemarne/Obey-examples) project.

@@ -23,7 +23,7 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
   http://github.com/mdemarne/Obey for more information."""
   val components = List[NscPluginComponent](ConvertComponent, ObeyComponent)
 
-  /* Processes the options for the plugin*/
+  /* Processes the options for the plugin */
   override def processOptions(options: List[String], error: String => Unit) {
     options.foreach {
       opt =>
@@ -33,26 +33,34 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
           val opts = opt.substring("addRules:".length)
           Keeper.rules = new Loader(opts, context).rules.toSet
           // reporter.info(NoPosition, "Obey add rules from: " + opts, true)
+
         } else if (UserOption.optMap.keys.exists(s => opt.startsWith(s))) {
           UserOption.addTags(opt)
           // reporter.info(NoPosition, "Tag Filters:\n" + UserOption.toString, true)
+
         } else if (regexp.matcher(opt).matches) {
           UserOption.disallow
-          // reporter.info(NoPosition, "List of Rules available:", true)
-          // reporter.info(NoPosition, Keeper.rules.mkString("\n"), true)
+          reporter.info(NoPosition, "List of Rules available:", true)
+          reporter.info(NoPosition, Keeper.rules.mkString("\n"), true)
+
         } else if (opt.equals("ListRules")) {
-          // reporter.info(NoPosition, "List of selected Rules:", true)
           val reports = UserOption.getReport
           val fixes = UserOption.getFormat
           if (!reports.isEmpty)
             reporter.info(NoPosition, "Warn Rules:\n" + reports.mkString("\n"), true)
           if (!fixes.isEmpty)
             reporter.info(NoPosition, "Fix Rules:\n" + fixes.mkString("\n"), true)
+          if (fixes.isEmpty && reports.isEmpty)
+            reporter.info(NoPosition, "No rules to be applied", true)
           UserOption.disallow
+
         } else {
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")
         }
     }
+    /* Printing a message if no rules are to be applied */
+    if (!options.exists(input => input.startsWith("listRules")) && UserOption.noRulesToApply)
+      reporter.info(NoPosition, "No Obey rules found.", true)
   }
 
   override val optionsHelp: Option[String] = Some("""
