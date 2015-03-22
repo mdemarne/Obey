@@ -14,10 +14,10 @@ object ObeyPlugin extends AutoPlugin {
   lazy val obeyListRules =
     Command.args("obey-list", "<args>") { (state: State, args) =>
       if(args.isEmpty){
-      Project.evaluateTask(Keys.compile in Compile,
+      Project.runTask(Keys.compile in Compile,
         (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules")), state))
       } else {
-        Project.evaluateTask(Keys.compile in Compile, 
+        Project.runTask(Keys.compile in Compile, 
           (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules:"+args.mkString)), state))
       }
       state
@@ -26,10 +26,10 @@ object ObeyPlugin extends AutoPlugin {
   lazy val obeyCheckCmd =
     Command.args("obey-check", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
-        Project.evaluateTask(Keys.compile in Compile,
+        Project.runTask(Keys.compile in Compile,
           (Project extract state).append(Seq(obeyFix := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       } else {
-        Project.evaluateTask(Keys.compile in Compile,
+        Project.runTask(Keys.compile in Compile,
           (Project extract state).append(Seq(obeyWarn := args.mkString.replace(",", ";"), obeyFix := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       }
       state
@@ -38,10 +38,10 @@ object ObeyPlugin extends AutoPlugin {
   lazy val obeyFixCmd =
     Command.args("obey-fix", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
-        Project.evaluateTask(Keys.compile in Compile,
+        Project.runTask(Keys.compile in Compile,
           (Project extract state).append(Seq(obeyWarn := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       } else {
-        Project.evaluateTask(Keys.compile in Compile,
+        Project.runTask(Keys.compile in Compile,
           (Project extract state).append(Seq(obeyFix := args.mkString.replace(",", ";"), obeyWarn := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       }
       state
