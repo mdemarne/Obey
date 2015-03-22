@@ -33,6 +33,6 @@ addSbtPlugin("com.github.mdemarne" %% "sbt-obey" % "0.1­0-SNAPSHOT")
 
 and
 ~~~
-lazy val myProject = Project(...) enablePlugins(obey)
+lazy val myProject = Project(...) enablePlugins(ObeyPlugin)
 ~~~
  For an example of how to use Obey, refer to the IObey project or the demo-obey one on my github.
