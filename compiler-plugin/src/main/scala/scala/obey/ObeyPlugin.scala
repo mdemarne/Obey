@@ -31,7 +31,7 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
           //Nothing to do
         } else if (opt.startsWith("addRules:")) {
           val opts = opt.substring("addRules:".length)
-          Keeper.loadedRules = new Loader(opts, context).rules.toSet
+          Keeper.rules = new Loader(opts, context).rules.toSet
           // reporter.info(NoPosition, "Obey add rules from: " + opts, true)
         } else if (UserOption.optMap.keys.exists(s => opt.startsWith(s))) {
           UserOption.addTags(opt)

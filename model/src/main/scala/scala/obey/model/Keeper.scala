@@ -1,23 +1,16 @@
 package scala.obey.model
 
 import scala.obey.model._
-import scala.obey.rules._
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 import java.util.regex.Pattern
 import scala.meta.semantic.Context
 
 object Keeper {
 
-  // val basicRules: Set[Rule] = Set(VarInsteadOfVal, ListToSet, ListToSetBool /*, Varargs */)
-  val basicRules: Set[Rule] = Set()
+  var rules: Set[Rule] = Set()
 
-  var loadedRules: Set[Rule] = Set()
-
-  def rules = basicRules ++ loadedRules
-
-  /*Enables to efficiently handle the tags*/
+  /* Enables to efficiently handle the tags */
   case class TagFilter(pos: Set[Pattern], neg: Set[Pattern]) {
-
     def matches(s: Set[String]): Boolean = {
       pos.isEmpty || s.exists(e => pos.exists(p => p.matcher(e).matches)) && (!s.exists(e => neg.exists(p => p.matcher(e).matches)))
     }

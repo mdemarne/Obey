@@ -31,6 +31,12 @@ object build extends Build {
       name := "obey-model"
     ))
 
+  lazy val rules = Project(
+    id = "rules",
+    base = file("rules"),
+    settings = sharedSettings ++ publishableSettings ++ commonDependencies
+  ) dependsOn(model)
+
   lazy val pluginSbt = Project(
     id = "sbt-plugin",
     base = file("sbt-plugin"),

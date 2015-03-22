@@ -1,5 +1,3 @@
-package scala.obey.rules
-
 import scala.meta.tql._
 
 import scala.language.reflectiveCalls

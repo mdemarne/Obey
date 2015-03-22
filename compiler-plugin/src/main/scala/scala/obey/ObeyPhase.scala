@@ -29,6 +29,7 @@ trait ObeyPhase {
 
       def apply(unit: CompilationUnit) {
         val path = unit.source.path
+        println(path)
         val punit = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
         val messageRules = UserOption.getReport
