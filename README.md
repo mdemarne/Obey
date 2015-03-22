@@ -28,7 +28,7 @@ selects all the rules that have a tag/name begining by List or equal to Set, whi
 
 In order to use Obey as an SBT autoplugin, use the following line:
 ~~~
-addSbtPlugin("com.github.mdemarne" %% "sbt­obey" % "0.1­0-SNAPSHOT")
+addSbtPlugin("com.github.mdemarne" %% "sbt-obey" % "0.1­0-SNAPSHOT")
 ~~~
 
 and
