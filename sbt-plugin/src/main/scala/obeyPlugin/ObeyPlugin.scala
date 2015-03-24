@@ -3,8 +3,8 @@ import Keys._
 import complete.DefaultParsers._
 
 object ObeyPlugin extends AutoPlugin {
-  val obeyFixTags = settingKey[String]("List of tags to filter rewritting rules.")
-  val obeyWarnTags = settingKey[String]("List of tags to filter warning rules.")
+  val obeyFixRules = settingKey[String]("List of tags to filter rewritting rules.")
+  val obeyWarnRules = settingKey[String]("List of tags to filter warning rules.")
   val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
 
   def getJars = (fullClasspath in Runtime) map { (cp) =>
@@ -27,10 +27,10 @@ object ObeyPlugin extends AutoPlugin {
     Command.args("obey-check", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyFixTags := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(obeyFixRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       } else {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyWarnTags := args.mkString.replace(",", ";"), obeyFixTags := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(obeyWarnRules := args.mkString.replace(",", ";"), obeyFixRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       }
       state
     }
@@ -39,22 +39,22 @@ object ObeyPlugin extends AutoPlugin {
     Command.args("obey-fix", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyWarnTags := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(obeyWarnRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       } else {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyFixTags := args.mkString.replace(",", ";"), obeyWarnTags := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(obeyFixRules := args.mkString.replace(",", ";"), obeyWarnRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
       }
       state
     }
 
   override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
-    obeyFixTags := "",
-    obeyWarnTags := "",
+    obeyFixRules := "",
+    obeyWarnRules := "",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(
-      "-P:obey:fix:" + obeyFixTags.value,
-      "-P:obey:warn:" + obeyWarnTags.value,
+      "-P:obey:fix:" + obeyFixRules.value,
+      "-P:obey:warn:" + obeyWarnRules.value,
       "-P:obey:addRules:" + obeyRulesDir.value).filterNot(x => x.endsWith(":")))
 }
