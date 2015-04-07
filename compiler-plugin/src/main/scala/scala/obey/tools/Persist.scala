@@ -24,11 +24,13 @@ object Persist {
 
   /* Absolute name required */
   def persist(name: String, tree: String): Unit = {
+    println(s"persisting $name")
     val f = new File(name)
-    if(f.exists()) throw new IOException(s"Error: file to persist ${name} already exists")
+    if (f.exists()) f.delete() // TODO: remove
+    //if(f.exists()) throw new IOException(s"Error: file to persist ${name} already exists")
     val w = new BufferedWriter(new FileWriter(name))
     w.write(tree)
-    // TODO: That's where things should be changed; we want to re-print the tree while keeping other thinfs
+    // TODO: That's where things should be changed; we want to re-print the tree while keeping other things
     // TODO: such as comments, formatting, etc. This could be achieved using tokens.
     w.close()
   }

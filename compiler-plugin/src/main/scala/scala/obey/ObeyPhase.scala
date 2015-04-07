@@ -35,7 +35,7 @@ trait ObeyPhase {
         val formattingRules = UserOption.getFormat
         var warnings: List[Message] = Nil
 
-        if (!messageRules.isEmpty){
+        if (!messageRules.isEmpty) {
           //reporter.info(NoPosition, "Warn Rules:\n"+messageRules.mkString("\n"), true)
           warnings ++= messageRules.map(_.apply).reduce((r1, r2) => r1 +> r2)(punit)
         }
@@ -46,9 +46,8 @@ trait ObeyPhase {
           //reporter.info(NoPosition, "Fix Rules:\n"+formattingRules.mkString("\n"), true)
           res = formattingRules.map(_.apply).reduce((r1, r2) => r1 + r2)(punit)
           if (res.tree.isDefined && !res.result.isEmpty) {
-            Persist.archive(path)
-            Persist.persist(path, res.tree.get.toString)
-            //Persist.persist(path, res.tree.get.show[Code])
+            //Persist.archive(path)
+            Persist.persist(path + ".test", res.tree.get.toString)
             warnings ++= res.result.map(m => Message("[CORRECTED] " + m.message, m.tree))
           } else {
             warnings ++= res.result
