@@ -25,7 +25,6 @@ trait ObeyPhase {
 
     override def description = "apply obey rules"
 
-
     def newPhase(prev: Phase): Phase = new StdPhase(prev) {
 
       def apply(unit: CompilationUnit) {

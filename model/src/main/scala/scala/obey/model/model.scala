@@ -7,7 +7,7 @@ import scala.reflect.runtime.{ currentMirror => cm, universe => ru }
 package object model {
 
   /* Message type */
-  case class Message(message: String, modifiedTree: scala.meta.Tree, originTree: Option[scala.meta.Tree] = None) {
+  case class Message(message: String, modifiedTree: scala.meta.Tree) {
     val position = getPos(modifiedTree)
   }
 
