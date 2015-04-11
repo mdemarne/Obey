@@ -31,6 +31,12 @@ trait ObeyPhase {
         val path = unit.source.path
         val punit = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
+        // TODO: move or remove
+        val codec = scala.io.Codec(java.nio.charset.Charset.forName("UTF-8"))
+        val content = scala.io.Source.fromFile(path)(codec).mkString
+        println(content.tokens)
+        println(formatter.Print(content.tokens))
+
         val messageRules = UserOption.getReport
         val formattingRules = UserOption.getFormat
         var warnings: List[Message] = Nil
