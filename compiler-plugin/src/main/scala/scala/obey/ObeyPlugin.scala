@@ -5,6 +5,8 @@
  */
 package scala.obey
 
+import java.io._
+
 import scala.obey.model.Keeper
 import scala.obey.model._
 import scala.obey.tools._
@@ -31,7 +33,7 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
           //Nothing to do
         } else if (opt.startsWith("addRules:")) {
           val opts = opt.substring("addRules:".length)
-          Keeper.rules = new Loader(opts, context).rules.toSet
+          Keeper.rules = new Loader(new File(opts), context).rules.toSet
           // reporter.info(NoPosition, "Obey add rules from: " + opts, true)
 
         } else if (UserOption.optMap.keys.exists(s => opt.startsWith(s))) {

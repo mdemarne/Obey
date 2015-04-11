@@ -1,12 +1,11 @@
 package scala.obey.tools
 
-import java.io.StringReader
+import scala.obey.model._
 
 import scala.language.implicitConversions
-import scala.obey.model._
-import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import scala.util.parsing.combinator.RegexParsers
-import scala.util.parsing.input._
+
+import java.io.StringReader
 
 object SetParser extends RegexParsers {
   //lexical.delimiters ++= List("+", "-", ",", "{","}", ";", "*")
@@ -18,7 +17,7 @@ object SetParser extends RegexParsers {
     val PLUS, MINUS  = Value
   }
 
-  import scala.obey.tools.OptParser.Op._
+  import Op._
 
   def tag: Parser[Tag] = """[\w\*]+""".r  ^^ {case e => e.replace("*", ".*") }
 
@@ -29,22 +28,22 @@ object SetParser extends RegexParsers {
 
     })
 
-  def set: Parser[(Set[Tag], Boolean)] = (
-    "+" ~> tags ^^ { case e => (e, true)}
-    |"-" ~> tags ^^ {case e => (e, false)}
+  def set: Parser[(Set[Tag], Op)] = (
+    "+" ~> tags ^^ { case e => (e, PLUS)} |
+    "-" ~> tags ^^ {case e => (e, MINUS)}
     )
 
-  def res: Parser[List[(Set[Tag], Boolean)]] = set.*
+  def res: Parser[List[(Set[Tag], Op)]] = set.*
 
   def parse(str: String): (Set[Tag], Set[Tag]) = {
-    /*val tokens = new lexical.Scanner(StreamReader(new StringReader(str)))
-    phrase(res)(tokens)*/ parseAll(res, str) match {
+    parseAll(res, str) match {
       case Success(t, _) => 
-        val (pos, neg) = t.partition(_._2 == true)
+        val (pos, neg) = t.partition(_._2 == PLUS)
         val posSet = pos.map(_._1).fold(Set())((x, y) => x ++ y)
         val negSet = neg.map(_._1).fold(Set())((x, y) => x ++ y)
         (posSet, negSet)
-      case e => println(e); (Set(), Set())
+      case e => println(e)
+        (Set(), Set())
     }
   }
 }
