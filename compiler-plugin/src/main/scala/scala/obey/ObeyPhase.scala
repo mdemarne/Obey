@@ -29,31 +29,33 @@ trait ObeyPhase {
 
       def apply(unit: CompilationUnit) {
         val path = unit.source.path
-        val punit = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
+        val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
-        // TODO: move or remove
+        // Getting original tokens from source
         val codec = scala.io.Codec(java.nio.charset.Charset.forName("UTF-8"))
         val content = scala.io.Source.fromFile(path)(codec).mkString
-        println(content.tokens)
-        println(formatter.Print(content.tokens))
+        val originTokens = content.tokens
 
         val messageRules = UserOption.getReport
         val formattingRules = UserOption.getFormat
-        var warnings: List[Message] = Nil
 
+        var warnings: List[Message] = Nil // TODO: remove this var for a val
+
+        /* Applying warnings */
         if (!messageRules.isEmpty) {
-          //reporter.info(NoPosition, "Warn Rules:\n"+messageRules.mkString("\n"), true)
-          warnings ++= messageRules.map(_.apply).reduce((r1, r2) => r1 +> r2)(punit)
+          warnings ++= messageRules.map(_.apply).reduce((r1, r2) => r1 +> r2)(originTree)
         }
 
-        var res: MatchResult[List[Message]] = null
+        var res: MatchResult[List[Message]] = null // TODO: remove this var for a val
 
+        /* Applying fixes */
         if (!formattingRules.isEmpty) {
           //reporter.info(NoPosition, "Fix Rules:\n"+formattingRules.mkString("\n"), true)
-          res = formattingRules.map(_.apply).reduce((r1, r2) => r1 + r2)(punit)
+          res = formattingRules.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
           if (res.tree.isDefined && !res.result.isEmpty) {
-            //Persist.archive(path)
-            Persist.persist(path + ".test", res.tree.get.toString)
+            //Persistence.archive(path) // TODO: uncomment
+            val newTokens = formatter.Merge(originTokens, originTree, res.tree.get)
+            Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test, here for testing
             warnings ++= res.result.map(m => Message("[CORRECTED] " + m.message, m.tree))
           } else {
             warnings ++= res.result

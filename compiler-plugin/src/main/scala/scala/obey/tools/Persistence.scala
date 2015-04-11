@@ -2,7 +2,7 @@ package scala.obey.tools
 
 import java.io.{BufferedWriter, File, FileWriter, IOException}
 
-object Persist {
+object Persistence {
 
   /* Renames the file as .scala.old */
   def archive(path: String): Unit = {
