@@ -26,7 +26,7 @@ package object model {
   }
 
   def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
-    try {
+    try { // TODO: checkout if there is not a nicer way to to that using scalaMeta Origins.
       import scala.language.reflectiveCalls
       //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
       //val associatedGtree = scratchpads.values.toList.head.asInstanceOf[List[_]].collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
