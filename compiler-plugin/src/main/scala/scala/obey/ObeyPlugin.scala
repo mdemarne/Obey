@@ -10,10 +10,11 @@ import java.io._
 import scala.obey.model.Keeper
 import scala.obey.model._
 import scala.obey.tools._
-import scala.tools.nsc.Global
-import scala.tools.nsc.plugins.{ PluginComponent => NscPluginComponent }
+
 import scala.meta._
 import scala.meta.internal.hosts.scalac.PluginBase
+import scala.tools.nsc.Global
+import scala.tools.nsc.plugins.{ PluginComponent => NscPluginComponent }
 
 class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
   import global._
@@ -21,44 +22,51 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
   val regexp = "ListRules:\\W*-all\\W*".r.pattern
   val name = "obey"
-  val description = """Compiler plugin that checks defined rules against scala meta trees.
-  http://github.com/mdemarne/Obey for more information."""
+  val description = """
+      |Compiler plugin that checks defined rules against scala meta trees.
+      |http://github.com/mdemarne/Obey for more information.
+    """.stripMargin
   val components = List[NscPluginComponent](ConvertComponent, ObeyComponent)
 
   /* Processes the options for the plugin */
   override def processOptions(options: List[String], error: String => Unit) {
     options.foreach {
-      opt =>
-        if (opt.endsWith(":")) {
-          //Nothing to do
-        } else if (opt.startsWith("addRules:")) {
-          val opts = opt.substring("addRules:".length)
-          Keeper.rules = new Loader(new File(opts), context).rules.toSet
-          // reporter.info(NoPosition, "Obey add rules from: " + opts, true)
+      opt => opt match {
+        /* Nothing to do as nothing to add */
+        case _ if opt.endsWith(":") =>
 
-        } else if (UserOption.optMap.keys.exists(s => opt.startsWith(s))) {
+        /* Rule directory */
+        case _ if opt.startsWith("addRules:") =>
+          val rulesDir = opt.substring("addRules:".length)
+          Keeper.rules = new Loader(new File(rulesDir), context).rules.toSet
+
+        /* Processing options */
+        case _ if UserOption.optMap.keys.exists(s => opt.startsWith(s)) =>
           UserOption.addTags(opt)
-          // reporter.info(NoPosition, "Tag Filters:\n" + UserOption.toString, true)
 
-        } else if (regexp.matcher(opt).matches) {
-          UserOption.disallow
+        /* Listing of all available rules */
+        case _ if regexp.matcher(opt).matches =>
+          // TODO: move this logic outside of the compiler plugin
+          UserOption.disallow /* Disallow all rules, this is not applying anything */
           reporter.info(NoPosition, "List of Rules available:", true)
           reporter.info(NoPosition, Keeper.rules.mkString("\n"), true)
 
-        } else if (opt.equals("ListRules")) {
+        /* Listing of a set of available rules */
+        case _ if opt.equals("ListRules") =>
+          // TODO: move this logic outside of the compiler plugin
+          UserOption.disallow /* Disallow all rules, this is not applying anything */
           val reports = UserOption.getReport
           val fixes = UserOption.getFormat
           if (!reports.isEmpty)
-            reporter.info(NoPosition, "Warn Rules:\n" + reports.mkString("\n"), true)
+            reporter.info(NoPosition, "Warning Rules:\n" + reports.mkString("\n"), true)
           if (!fixes.isEmpty)
-            reporter.info(NoPosition, "Fix Rules:\n" + fixes.mkString("\n"), true)
+            reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
           if (fixes.isEmpty && reports.isEmpty)
             reporter.info(NoPosition, "No rules to be applied", true)
-          UserOption.disallow
 
-        } else {
+        case othr =>
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")
-        }
+      }
     }
     /* Printing a message if no rules are to be applied */
     if (!options.exists(input => input.startsWith("listRules")) && UserOption.noRulesToApply)
@@ -74,5 +82,5 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
     |   ListRules           Lists the rules to be used in the plugin
     |   ListRules: -all     Lists all the rules available
     |
-    """)
+    """.stripMargin)
 }

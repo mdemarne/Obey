@@ -5,15 +5,12 @@ import scala.reflect.internal.util.NoPosition
 import scala.reflect.runtime.{ currentMirror => cm, universe => ru }
 
 package object model {
-
+  /* Hold a list of rules, either to apply (positive) or to discard (negative) */
   case class Holder(var pos: Set[Tag], var neg: Set[Tag], var use: Boolean) {
-
-    override def toString: String = {
-      s"+{${pos.mkString(",")}} - {${neg.mkString(",")}}"
-    }
+    override def toString: String = s"+{${pos.mkString(",")}} - {${neg.mkString(",")}}"
   }
 
-  /* Message type*/
+  /* Message type */
   case class Message(message: String, tree: scala.meta.Tree) {
     val position = getPos(tree)
   }

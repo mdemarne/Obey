@@ -10,6 +10,7 @@ object UserOption {
   private val format = Holder(Set(), Set(), false)
   private val report = Holder(Set(), Set(), true)
 
+  /* Mapping string literals to their respective holders */
   val optMap: Map[String, Holder] = Map("all:" -> all, "fix:" -> format, "warn:" -> report)
 
   /* Get rules for a holder according to the 'all' filter */
@@ -22,9 +23,11 @@ object UserOption {
 
   /* All methods to get the correct rules to apply */
   def getFormat: Set[Rule] = getRules(format)
+
   /* Avoids traversing the tree twice for format and warnings */
   def getReport: Set[Rule] = getRules(report) -- getFormat
 
+  /* Check whenever there are not rules to apply at all */
   def noRulesToApply: Boolean = this.getRules(format).isEmpty && this.getRules(report).isEmpty
 
   def addTags(opts: String): Unit = optMap.find(e => opts.startsWith(e._1)) match {
