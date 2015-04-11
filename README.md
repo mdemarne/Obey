@@ -9,9 +9,9 @@ addCompilerPlugin("com.github.mdemarne" % "sbt-compiler-plugin_2.11.6" % "0.1.0-
 ~~~
 The compiler plugin defines the following options:
 * all:<OFL> enables to apply a filter on the entire set of rules considered
-* warn:<OFL> enables to select the rules that will only generate warnings
-* fix:<OFL> enables to select the rules that will automatically correct the source code
-* addRules:<path to compiled classes> enables to add user-defined rules to a project
+* warnings:<OFL> enables to select the rules that will only generate warnings
+* fixes:<OFL> enables to select the rules that will automatically correct the source code
+* obeyRulesDir:<path to compiled classes> enables to add user-defined rules to a project
 
 The option filtering language (OFL) correponds to the following parser:
 ~~~
