@@ -1,13 +1,11 @@
 package scala.obey.formatter
 
 import scala.meta._
-import scala.meta.dialects.Scala211
 
 /* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
 
-
-  def apply(originTokens: Vector[Token], originTree: Tree, modifiedTree: Tree): Vector[Token] = {
+  def apply(originTokens: Vector[Token], originTree: Tree, modifiedTree: Tree)(implicit c: semantic.Context): Vector[Token] = {
     // TODO
     modifiedTree.toString.tokens
   }
@@ -15,6 +13,11 @@ object Merge {
   /*
    * TODO: check why tokens do not seems to be available from the NSC parser
    * Step1: identify parts of tree that have changed.
+   *  This will need to have:
+   *    1. The direct mapping between original tokens and original trees
+   *        TODO: not obvious
+   *    2. Mapping between original trees and modified trees
+   *      => Easy, using TQL => #
    * Step2: get tokens for those part of trees (using pretty printing and reparsing, as it's not available since it does not come from any source)
    * Step3: Update original toke stream based on the various modifed token stream generated above.This merge should:
    *  1. Keep layout around the modification as before

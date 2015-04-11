@@ -4,7 +4,6 @@ import scala.meta.tql._
 
 /* Rule implementation definition */
 trait Rule {
-  import scala.obey.model._
 
   def description: String
 
