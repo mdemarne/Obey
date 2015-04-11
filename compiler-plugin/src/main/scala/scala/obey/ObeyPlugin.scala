@@ -7,7 +7,6 @@ package scala.obey
 
 import java.io._
 
-import scala.obey.model.Keeper
 import scala.obey.model._
 import scala.obey.tools._
 
@@ -36,40 +35,37 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
         case _ if opt.endsWith(":") =>
 
         /* Rule directory */
-        case _ if opt.startsWith("addRules:") =>
-          val rulesDir = opt.substring("addRules:".length)
-          Keeper.rules = new Loader(new File(rulesDir), context).rules.toSet
+        case _ if opt.startsWith("obeyRulesDir:") =>
+          val rulesDir = opt.substring("obeyRulesDir:".length)
+          UserOptions.rules = new Loader(new File(rulesDir), context).rules.toSet
 
         /* Processing options */
-        case _ if UserOption.optMap.keys.exists(s => opt.startsWith(s)) =>
-          UserOption.addTags(opt)
+        case _ if UserOptions.optMap.keys.exists(s => opt.startsWith(s)) =>
+          UserOptions.addTags(opt)
 
         /* Listing of all available rules */
         case _ if regexp.matcher(opt).matches =>
           // TODO: move this logic outside of the compiler plugin
-          UserOption.disallow /* Disallow all rules, this is not applying anything */
+          UserOptions.disallow /* Disallow all rules, this is not applying anything */
           reporter.info(NoPosition, "List of Rules available:", true)
-          reporter.info(NoPosition, Keeper.rules.mkString("\n"), true)
+          reporter.info(NoPosition, UserOptions.rules.mkString("\n"), true)
 
         /* Listing of a set of available rules */
         case _ if opt.equals("ListRules") =>
           // TODO: move this logic outside of the compiler plugin
-          UserOption.disallow /* Disallow all rules, this is not applying anything */
-          val reports = UserOption.getReport
-          val fixes = UserOption.getFormat
-          if (!reports.isEmpty)
-            reporter.info(NoPosition, "Warning Rules:\n" + reports.mkString("\n"), true)
-          if (!fixes.isEmpty)
-            reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
-          if (fixes.isEmpty && reports.isEmpty)
-            reporter.info(NoPosition, "No rules to be applied", true)
+          UserOptions.disallow /* Disallow all rules, this is not applying anything */
+          val warnings = UserOptions.getWarnings
+          val fixes = UserOptions.getFixes
+          if (!warnings.isEmpty) reporter.info(NoPosition, "Warning Rules:\n" + warnings.mkString("\n"), true)
+          if (!fixes.isEmpty) reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
+          if (fixes.isEmpty && warnings.isEmpty) reporter.info(NoPosition, "No rules to be applied", true)
 
         case othr =>
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")
       }
     }
     /* Printing a message if no rules are to be applied */
-    if (!options.exists(input => input.startsWith("listRules")) && UserOption.noRulesToApply)
+    if (!options.exists(input => input.startsWith("listRules")) && UserOptions.noRulesToApply)
       reporter.info(NoPosition, "No Obey rules found.", true)
   }
 

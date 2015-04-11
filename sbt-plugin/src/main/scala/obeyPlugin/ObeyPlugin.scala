@@ -54,7 +54,7 @@ object ObeyPlugin extends AutoPlugin {
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(
-      "-P:obey:fix:" + obeyFixRules.value,
-      "-P:obey:warn:" + obeyWarnRules.value,
-      "-P:obey:addRules:" + obeyRulesDir.value).filterNot(x => x.endsWith(":")))
+      "-P:obey:fixes:" + obeyFixRules.value,
+      "-P:obey:warnings:" + obeyWarnRules.value,
+      "-P:obey:obeyRulesDir:" + obeyRulesDir.value).filterNot(x => x.endsWith(":")))
 }

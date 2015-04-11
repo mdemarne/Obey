@@ -4,7 +4,7 @@ import scala.meta.tql._
 
 import scala.meta._
 import scala.obey.model._
-import scala.obey.tools.{UserOption, _}
+import scala.obey.tools._
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.{PluginComponent => NscPluginComponent}
 import scala.meta.dialects.Dotty
@@ -38,13 +38,13 @@ trait ObeyPhase {
         val originTokens = content.tokens
 
         /* Applying warnings */
-        val simpleWarnings: List[Message] = UserOption.getReport match {
+        val simpleWarnings: List[Message] = UserOptions.getWarnings match {
           case lst if lst.isEmpty => Nil
           case lst => lst.map(_.apply).reduce((r1, r2) => r1 +> r2)(originTree)
         }
 
         /* Applying fixes, saving changes and returning warnings */
-        val fixWarnings: List[Message] = UserOption.getFormat match {
+        val fixWarnings: List[Message] = UserOptions.getFixes match {
           case lst if lst.isEmpty => Nil
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)

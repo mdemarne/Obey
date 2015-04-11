@@ -3,12 +3,10 @@ package scala.obey.formatter
 import scala.meta._
 import scala.meta.dialects.Scala211
 
-/**
- * Created by mdemarne on 4/11/15.
- */
+/* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
 
-  /* Formal a list of tokens based on the original tree and the modified tree */
+
   def apply(originTokens: Vector[Token], originTree: Tree, modifiedTree: Tree): Vector[Token] = {
     // TODO
     modifiedTree.toString.tokens
