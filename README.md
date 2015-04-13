@@ -1,4 +1,4 @@
-Obey
+Obey [![Build Status](https://travis-ci.org/mdemarne/Obey.svg?branch=master)](https://travis-ci.org/mdemarne/Obey)
 ====
 
 Obey is  a linter tool for Scala. Obey enables to define rules, based on scala.meta trees and the TQL library, corresponding to code health requirements. A rule can generate warnings and/or propose to correct the source code automatically.
