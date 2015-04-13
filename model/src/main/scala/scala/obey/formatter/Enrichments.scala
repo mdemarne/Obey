@@ -17,7 +17,7 @@ class Enrichments(implicit c: semantic.Context) {
      * it will have to token streams. This function make use of the scala.meta pretty printer and the tokenizer
      * to generate standard token output, which will be used in the various merging parts of the formatter
      */
-    def generateTokens = tree.toString.tokens
+    def prettyTokens = tree.toString.tokens
 
   }
 

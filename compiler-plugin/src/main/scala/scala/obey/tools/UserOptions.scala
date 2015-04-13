@@ -39,9 +39,9 @@ object UserOptions {
 
   /* Update holders based on tags */
   def addTags(opts: String): Unit = optMap.find(e => opts.startsWith(e._1)) match {
-    case Some((_, h)) if opts.contains("--") => 
+    case Some((_, h)) if opts.contains("--") =>
       h.use = false
-    case Some((_, h)) if opts.contains("++") => 
+    case Some((_, h)) if opts.contains("++") =>
       h.use = true
       addTags(opts.replace("++", ""))
     case Some((s, h)) if !opts.endsWith(":") => 
