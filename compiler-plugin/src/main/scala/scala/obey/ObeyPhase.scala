@@ -31,9 +31,9 @@ trait ObeyPhase {
         val path = unit.source.path
         val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
+        // TODO: this should be done by scalahost ConvertPhase
         /* Getting original tokens from source */
-        val codec = scala.io.Codec(java.nio.charset.Charset.forName("UTF-8"))
-        val content = scala.io.Source.fromFile(path)(codec).mkString
+        val content = unit.source.content.mkString("")
         val originTokens = content.tokens
 
         /* Applying warnings */
