@@ -23,7 +23,6 @@ object Persistence {
 
   /* Absolute name required */
   def persist(name: String, tree: String): Unit = {
-    println(s"persisting $name")
     val f = new File(name)
     if (f.exists()) f.delete() // TODO: remove
     //if(f.exists()) throw new IOException(s"Error: file to persist ${name} already exists")
