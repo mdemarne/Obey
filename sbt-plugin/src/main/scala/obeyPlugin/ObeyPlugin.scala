@@ -17,7 +17,7 @@ object ObeyPlugin extends AutoPlugin {
       Project.runTask(Keys.compile in Compile,
         (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules")), state))
       } else {
-        Project.runTask(Keys.compile in Compile, 
+        Project.runTask(Keys.compile in Compile,
           (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules:"+args.mkString)), state))
       }
       state
@@ -27,10 +27,19 @@ object ObeyPlugin extends AutoPlugin {
     Command.args("obey-check", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyFixRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(
+            obeyFixRules := "--",
+            scalacOptions ++= Seq("-Ystop-after:obey"),
+            excludeFilter in unmanagedSources := "*.java"
+          ), state))
       } else {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyWarnRules := args.mkString.replace(",", ";"), obeyFixRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(
+            obeyWarnRules := args.mkString.replace(",", ";"),
+            obeyFixRules := "--",
+            scalacOptions ++= Seq("-Ystop-after:obey"),
+            excludeFilter in unmanagedSources := "*.java"
+          ), state))
       }
       state
     }
@@ -39,10 +48,19 @@ object ObeyPlugin extends AutoPlugin {
     Command.args("obey-fix", "<args>") { (state: State, args) =>
       if (args.isEmpty) {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyWarnRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(
+            obeyWarnRules := "--",
+            scalacOptions ++= Seq("-Ystop-after:obey"),
+            excludeFilter in unmanagedSources := "*.java"
+          ), state))
       } else {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(obeyFixRules := args.mkString.replace(",", ";"), obeyWarnRules := "--", scalacOptions ++= Seq("-Ystop-after:obey")), state))
+          (Project extract state).append(Seq(
+            obeyFixRules := args.mkString.replace(",", ";"),
+            obeyWarnRules := "--",
+            scalacOptions ++= Seq("-Ystop-after:obey"),
+            excludeFilter in unmanagedSources := "*.java"
+          ), state))
       }
       state
     }
