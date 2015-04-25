@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala") object EnforceTry extends Rule {
+@Tag("Scala", "Style") object EnforceTry extends Rule {
 
   def description = "Enforce usage of Try object, preventing usage of conventional try/catch."
 

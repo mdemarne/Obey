@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala") object ProhibitWhileLoop extends Rule {
+@Tag("Scala", "Style") object ProhibitWhileLoop extends Rule {
 
   def description = "Prohibit calls to while and do loops - better use recursion!"
 

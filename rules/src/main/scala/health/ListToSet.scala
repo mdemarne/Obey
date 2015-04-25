@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala") object ListToSet extends Rule {
+@Tag("Scala", "ErrorProne") object ListToSet extends Rule {
 
   def description = "defining List.toSet is defining a Set"
 

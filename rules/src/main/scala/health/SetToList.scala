@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala") object SetToList extends Rule {
+@Tag("Scala", "ErrorProne") object SetToList extends Rule {
 
   def description = "defining Set.toList is defining a list but does not preserve ordering"
 

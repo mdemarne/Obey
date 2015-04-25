@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala") object ProhibitImperativeCalls extends Rule {
+@Tag("Scala", "Style") object ProhibitImperativeCalls extends Rule {
 
   def description = "Prohibit inperative calls"
 

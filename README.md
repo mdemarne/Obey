@@ -70,17 +70,23 @@ Obey will automatically notice the existence of the jar and load the rules to ap
 
 ##### Implemented rules
 
+Corresponding tags are put into brackets.
+
 - health:
-  - `EnforceTry`: Enforces the use of the `Try` object rather than conventional `try {...} catch {...}`
-  - `SetToList`: Prevent transforming set to lists, as it does not preserve the ordering
-  - `ProhibitImperativeCalls`: Prevent the call to imperative keywords such as `return`
-  - `ProhibitWhileLoop`: Prevent the use of `while` and `do` - better use recursive calls
-  - `ListToSet`: Avoid Creating a list and transforming it to set directly
-  - VarInsteadOfVal`: Prevent the use of vars when possible
+  - `[Scala, Style] EnforceTry`: Enforces the use of the `Try` object rather than conventional `try {...} catch {...}`
+  - `[Scala, ErrorProne] SetToList`: Prevent transforming set to lists, as it does not preserve the ordering
+  - `[Scala, Style] ProhibitImperativeCalls`: Prevent the call to imperative keywords such as `return`
+  - `[Scala, Style] ProhibitWhileLoop`: Prevent the use of `while` and `do` - better use recursive calls
+  - `[Scala, ErrorProne] ListToSet`: Avoid Creating a list and transforming it to set directly
+  - `[Scala, ErrorProne] VarInsteadOfVal`: Prevent the use of vars when possible
+  - `[Scala, ErrorProne] ProhibitNullLit`: Prohibit null literal
+  - `[Scala, Completeness] ProhibitMagicNumber`: Prohibit magic numbers
+  - `[Scala, Completeness] EnforceImplementation`: Prohibit lack of implementation (???)
+  - `[Scala, Style] EnforceCaseObject`: Prohibit empty case classes: better use a case object (sometimes!)
 - dotty (rules specific to Dotty):
-  - `ExplicitImplicitTypes`: Forbidding implicit types
-  - `EarlyInitializer`: Early initializers are not supported in Dotty
-  - `Varargs`: Varargs are not supported in Dotty
+  - `[Dotty] ExplicitImplicitTypes`: Forbidding implicit types
+  - `[Dotty] EarlyInitializer`: Early initializers are not supported in Dotty
+  - `[Dotty] Varargs`: Varargs are not supported in Dotty
 
 ##### Comming rules
 
@@ -90,10 +96,6 @@ This is a non-exhaustive list of coming rules:
   - Avoid creating threads: better use Futures
   - Enforce naming conventions
   - Prohibit the use of Option.get
-  - Prohibit magic numbers
-  - Prohibit null literal
-  - Prohibit lack of implementation (???)
   - Prohibit head and last on collections
-  - Prohibit empty case classes
 
 Obey also aims to propose transformation rules (e.g. to move from one version of Play to another one), not only health rules. This is coming, too!
