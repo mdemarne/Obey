@@ -12,10 +12,16 @@ object ObeyPlugin extends AutoPlugin {
     Command.args("obey-list", "<args>") { (state: State, args) =>
       if(args.isEmpty) {
       Project.runTask(Keys.compile in Compile,
-        (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules")), state))
+        (Project extract state).append(Seq(
+          scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules"),
+          excludeFilter in unmanagedSources := "*.java"
+        ), state))
       } else {
         Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules:"+args.mkString)), state))
+          (Project extract state).append(Seq(
+            scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules:"+args.mkString),
+            excludeFilter in unmanagedSources := "*.java"
+          ), state))
       }
       state
     }

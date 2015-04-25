@@ -1,8 +1,11 @@
 package scala.obey
 
+import scala.meta.{ Origin, Input }
+
 import scala.annotation.StaticAnnotation
-import scala.reflect.internal.util.NoPosition
+import scala.reflect.internal.util.{ NoPosition, RangePosition, ScriptSourceFile }
 import scala.reflect.runtime.{ currentMirror => cm, universe => ru }
+import scala.reflect.io.AbstractFile
 
 package object model {
 
@@ -22,24 +25,23 @@ package object model {
       val (posPattern, negPattern) = (tagsToPattern(pos), tagsToPattern(neg))
       lst filter { x =>
         val ruleTags = x.getTags + x.getClass.getName.split("\\$").last.toLowerCase
-        pos.isEmpty || /* If the positive set is empty, we take all rules */
-        ruleTags.exists(e => posPattern.exists(p => p.matcher(e).matches)) && (!ruleTags.exists(e => negPattern.exists(p => p.matcher(e).matches)))
+        /* If the positive and negative sets are empty, we take all rules and remove negatives */
+        (pos.isEmpty || ruleTags.exists(e => posPattern.exists(p => p.matcher(e).matches))) &&
+        (!ruleTags.exists(e => negPattern.exists(p => p.matcher(e).matches)))
       }
     }
   }
 
-  // TODO: checkout if there is not a nicer way to to that using scalaMeta Origins.
-  def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
-    try {
-      import scala.language.reflectiveCalls
-      //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
-      //val associatedGtree = scratchpads.values.toList.head.asInstanceOf[List[_]].collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
-      val scratchpad = t.asInstanceOf[{ def internalScratchpad: Seq[Any] }].internalScratchpad
-      val associatedOriginal = scratchpad.collect { case x: Product if x.productPrefix == "Original" => x }.head
-      val associatedGtree = associatedOriginal.asInstanceOf[{ def goriginal: Any }].goriginal.asInstanceOf[scala.reflect.internal.SymbolTable#Tree]
-      associatedGtree.pos
-    } catch {
-      case e: Exception => NoPosition
+  private def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
+    t.origin match {
+      case x: Origin.Parsed =>
+          x.input match {
+            case Input.None => NoPosition
+            case in: Input.File =>
+              val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
+              new RangePosition(sourceFile, x.start, x.start, x.end)
+          }
+      case _ => NoPosition
     }
   }
 

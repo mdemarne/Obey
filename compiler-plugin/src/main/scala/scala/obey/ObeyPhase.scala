@@ -37,13 +37,13 @@ trait ObeyPhase {
         val originTokens = content.tokens
 
         /* Applying warnings */
-        val simpleWarnings: List[Message] = UserOptions.getWarnings match {
+        val simpleWarnings: List[Message] = UserOptions.getWarnings() match {
           case lst if lst.isEmpty => Nil
           case lst => lst.map(_.apply).reduce((r1, r2) => r1 +> r2)(originTree)
         }
 
         /* Applying fixes, saving changes and returning warnings */
-        val fixWarnings: List[Message] = UserOptions.getFixes match {
+        val fixWarnings: List[Message] = UserOptions.getFixes() match {
           case lst if lst.isEmpty => Nil
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
