@@ -81,7 +81,6 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
   override val optionsHelp: Option[String] = Some("""
     | -P:obey:
-    |   all:                Specifies filters for all
     |   fix:                Specifies filters for format
     |   warn:               Specifies filter for warnings
     |   addRules:           Specifies user defined rules

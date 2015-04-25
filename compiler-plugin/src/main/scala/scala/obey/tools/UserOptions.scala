@@ -10,8 +10,7 @@ object UserOptions {
     override def toString: String = s"+{${pos.mkString(",")}} - {${neg.mkString(",")}}"
     /* Get rules for a holder according to the 'all' filter first */
     def getRules: Set[Rule] = {
-        val allowedRules: Set[Rule] = rules.filterRules(all.pos, all.neg)
-        allowedRules.filterRules(this.pos, this.neg)
+        rules.filterRules(this.pos, this.neg)
     }
     /* Get all the rules only if the compilation is allowed */
     def getAllowedRules = this.use match {
@@ -24,12 +23,11 @@ object UserOptions {
   var rules: Set[Rule] = Set()
 
   /*  Various tag holders */
-  private val all = TagHolder(Set(), Set(), true)
   private val fixes = TagHolder(Set(), Set(), false)
   private val warnings = TagHolder(Set(), Set(), true)
 
   /* Mapping string literals to their respective holders */
-  val optMap = Map("all:" -> all, "fixes:" -> fixes, "warnings:" -> warnings)
+  val optMap = Map("fixes:" -> fixes, "warnings:" -> warnings)
 
   /* All methods to get the correct rules to apply */
   def getFixes(allowedToRunOnly: Boolean = true): Set[Rule] = if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules
@@ -60,7 +58,6 @@ object UserOptions {
   }
 
   def disallow: Unit = {
-    all.use = false
     fixes.use = false
     warnings.use = false
   }

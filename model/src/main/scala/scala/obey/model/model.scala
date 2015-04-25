@@ -25,9 +25,8 @@ package object model {
       val (posPattern, negPattern) = (tagsToPattern(pos), tagsToPattern(neg))
       lst filter { x =>
         val ruleTags = x.getTags + x.getClass.getName.split("\\$").last.toLowerCase
-        /* If the positive and negative sets are empty, we take all rules and remove negatives */
-        (pos.isEmpty || ruleTags.exists(e => posPattern.exists(p => p.matcher(e).matches))) &&
-        (!ruleTags.exists(e => negPattern.exists(p => p.matcher(e).matches)))
+        ruleTags.exists(e => posPattern.exists(p => p.matcher(e).matches)) &&
+        !ruleTags.exists(e => negPattern.exists(p => p.matcher(e).matches))
       }
     }
   }

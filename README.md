@@ -19,7 +19,6 @@ In order to use the Obey as a compiler plugin, that runs a phase called 'obey', 
 addCompilerPlugin("com.github.mdemarne" % "sbt-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT")
 ~~~
 The compiler plugin defines the following options:
-* `all:<OFL>` enables to apply a filter on the entire set of rules considered
 * `warnings:<OFL>` enables to select the rules that will only generate warnings
 * `fixes:<OFL>` enables to select the rules that will automatically correct the source code
 * `obeyRulesDir:<path to compiled classes>` enables to add user-defined rules to a project
@@ -35,7 +34,7 @@ For example the following expression
 ~~~
 +{List*, Set} - {Array}
 ~~~
-selects all the rules that have a tag/name begining by List or equal to Set, while excluding all the ones that have a tag/name equal to Array
+selects all the rules that have a tag/name begining by List or equal to Set, while excluding all the ones that have a tag/name equal to Array. By default, all Scala rules are selected as warnings
 
 ### As a SBT autoplugin
 
