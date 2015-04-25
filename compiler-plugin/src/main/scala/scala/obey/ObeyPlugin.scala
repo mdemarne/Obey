@@ -1,7 +1,7 @@
 /**
  * 	Main component of the compiler plugin.
  *
- * 	@author Adrien Ghosn
+ * 	@author Adrien Ghosn, Mathieu Demarne
  */
 package scala.obey
 
@@ -27,6 +27,13 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
     """.stripMargin
   val components = List[NscPluginComponent](ConvertComponent, ObeyComponent)
 
+  /* Loading default rules, if any */
+  global.classPath.asURLs.map(_.toString).find(_.contains("obey-rules")) map { jar =>
+    val path = jar.stripPrefix("file:")
+    println(new Loader(new File(path), context).loadRulesFromJar.toSet)
+    /*UserOptions.rules ++= */new Loader(new File(path), context).loadRulesFromJar.toSet
+  }
+
   /* Processes the options for the plugin */
   override def processOptions(options: List[String], error: String => Unit) {
     options.foreach {
@@ -37,7 +44,7 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
         /* Rule directory */
         case _ if opt.startsWith("obeyRulesDir:") =>
           val rulesDir = opt.substring("obeyRulesDir:".length)
-          UserOptions.rules = new Loader(new File(rulesDir), context).rules.toSet
+          UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromDir.toSet
 
         /* Processing options */
         case _ if UserOptions.optMap.keys.exists(s => opt.startsWith(s)) =>

@@ -7,17 +7,6 @@ object ObeyPlugin extends AutoPlugin {
   val obeyWarnRules = settingKey[String]("List of tags to filter warning rules.")
   val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
 
-  val defaultObeyRulesCp = taskKey[Unit]("default-obey-rules-classpath")
-  val defaultObeyRulesCpTask = defaultObeyRulesCp := {
-    val files: Seq[String] = (fullClasspath in Compile).value.files.map(_.getAbsolutePath)
-    files.find(x => x.contains("obey-rules")) map { cp =>
-      println(cp)
-      System.setProperty("default-obey-rules-classpath", cp)
-    }
-  }
-
-  val newCompile = compile  <<= (compile in Compile) dependsOn defaultObeyRulesCp
-
   lazy val obeyListRules =
     Command.args("obey-list", "<args>") { (state: State, args) =>
       if(args.isEmpty) {
@@ -72,13 +61,12 @@ object ObeyPlugin extends AutoPlugin {
       state
     }
 
-  override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = newCompile ++ Seq(
+  override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
     obeyFixRules := "",
     obeyWarnRules := "+{*}",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
-    defaultObeyRulesCpTask,
     scalacOptions ++= Seq(
       "-P:obey:fixes:" + obeyFixRules.value,
       "-P:obey:warnings:" + obeyWarnRules.value,
