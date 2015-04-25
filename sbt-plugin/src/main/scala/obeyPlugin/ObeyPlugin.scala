@@ -6,6 +6,7 @@ object ObeyPlugin extends AutoPlugin {
   val obeyFixRules = settingKey[String]("List of tags to filter rewritting rules.")
   val obeyWarnRules = settingKey[String]("List of tags to filter warning rules.")
   val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
+  val obeyRulesJar = settingKey[String]("Path to jars containing compiled rules.")
 
   lazy val obeyListRules =
     Command.args("obey-list", "<args>") { (state: State, args) =>
@@ -65,10 +66,12 @@ object ObeyPlugin extends AutoPlugin {
     obeyFixRules := "",
     obeyWarnRules := "+{*}",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
+    obeyRulesJar := "", // No default jar
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(
       "-P:obey:fixes:" + obeyFixRules.value,
       "-P:obey:warnings:" + obeyWarnRules.value,
-      "-P:obey:obeyRulesDir:" + obeyRulesDir.value).filterNot(x => x.endsWith(":")))
+      "-P:obey:obeyRulesDir:" + obeyRulesDir.value,
+      "-P:obey:obeyRulesJar:" + obeyRulesJar.value).filterNot(x => x.endsWith(":")))
 }
