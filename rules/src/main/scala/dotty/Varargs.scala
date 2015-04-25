@@ -5,7 +5,8 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Dotty", "Argument") object Varargs extends Rule {
+@Tag("Dotty") object Varargs extends Rule {
+
   def description = "Varargs are not allowed in Dotty"
 
   def message(t: Pat.Bind): Message = Message(s"Vararg $t not supported", t)
