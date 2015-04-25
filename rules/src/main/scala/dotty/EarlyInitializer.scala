@@ -1,3 +1,5 @@
+package dotty
+
 import scala.meta.tql._
 
 import scala.meta.internal.ast._
@@ -12,5 +14,5 @@ import scala.meta.semantic._
       case t @ Template(early, _, _, _) if early.nonEmpty =>
         Message(s"$t uses unsupported early initializer syntax", t)
     }.topDown
-  
+
 }

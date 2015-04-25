@@ -1,3 +1,5 @@
+package health
+
 import scala.meta.tql._
 
 import scala.meta.internal.ast._

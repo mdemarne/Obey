@@ -1,3 +1,5 @@
+package health
+
 import scala.meta.tql._
 
 import scala.language.reflectiveCalls
@@ -22,5 +24,5 @@ import scala.meta.dialects.Scala211
         sys.error("This rule does not work without the implementation of name.source.")
         message(get)
     }.topDown
-  
+
 }

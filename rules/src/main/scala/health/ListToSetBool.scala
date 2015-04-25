@@ -1,3 +1,5 @@
+package health
+
 import scala.meta.tql._
 
 import scala.meta.internal.ast._
@@ -13,5 +15,5 @@ import scala.obey.model._
       case tt @ Term.Apply(t @ Term.Select(Term.Apply(Term.Name("List"), _), Term.Name("toSet")), _) =>
         t andCollect message(tt)
     }.topDown
-  
+
 }

@@ -34,7 +34,7 @@ object build extends Build {
   lazy val rules = Project(
     id = "rules",
     base = file("rules"),
-    settings = sharedSettings ++ publishableSettings ++ commonDependencies
+    settings = sharedSettings ++ publishableSettings ++ commonDependencies ++ Seq(name := "obey-rules")
   ) dependsOn(model)
 
   lazy val pluginSbt = Project(
