@@ -9,8 +9,8 @@ import scala.obey.model._
 
   def description = "Enforce case objects rather than empty case classes"
 
-  def apply = collect {
-    case Defn.Class(mods, n: Type.Name, _, _, Ctor.Primary(_, _, args)) if args.flatten.length == 0 && mods.contains(Mod.Case) =>
-      Message("Empty case classes would better be case objects", n)
+  def apply = transform {
+    case Defn.Class(mods, n: Type.Name, ref, ctor @ Ctor.Primary(_, _, args), bdy) if args.flatten.length == 0 && mods.contains(Mod.Case()) =>
+      Defn.Object(mods, Term.Name(n.value), ctor, bdy) andCollect Message("Empty case classes would better be case objects", n)
   }.topDown
 }
