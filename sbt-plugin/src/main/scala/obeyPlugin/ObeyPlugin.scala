@@ -64,7 +64,7 @@ object ObeyPlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
     obeyFixRules := "",
-    obeyWarnRules := "+{*}",
+    obeyWarnRules := "+{*}-{Dotty}",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
     obeyRulesJar := "", // No default jar
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyListRules),
