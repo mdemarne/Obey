@@ -1,4 +1,4 @@
-Obey [![Build Status](https://travis-ci.org/mdemarne/Obey.svg?branch=rewriting)](https://travis-ci.org/mdemarne/Obey)
+Obey [![Build Status](https://travis-ci.org/mdemarne/Obey.svg?branch=master)](https://travis-ci.org/mdemarne/Obey)
 ====
 
 
