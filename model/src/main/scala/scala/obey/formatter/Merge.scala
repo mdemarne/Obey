@@ -1,15 +1,35 @@
 package scala.obey.formatter
 
 import scala.meta._
+import scala.meta.dialects.Scala211
+
+import scala.reflect.ClassTag
 
 /* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
 
-  def apply(originTree: Tree, modifiedTree: Tree, modifications: List[(Tree, Tree)])(implicit c: semantic.Context): Vector[Token] = {
-    // TODO
-    println(modifications)
-    modifications.foreach(mod => println(mod._1.origin.start + " : " + mod._2.origin.start))
-    modifiedTree.toString.tokens
+  def apply(originTree: Tree, modifiedTree: Tree, mods: List[(Tree, Tree)])(implicit c: semantic.Context): Seq[Token] = {
+    // TODO: keep layout and re-apply it to modified trees
+    def generateTokens(tree: Tree) = {
+      val newCode = tree.show[Code]
+      val newParse = tree match {
+        case _: Source => newCode.parse[Source]
+        case _: Stat => newCode.parse[Stat]
+      }
+      newParse.origin.tokens
+    }
+
+    def replaceTokens(originTokens: Seq[Token], mods: List[(Tree, Tree)]): Seq[Token] = mods match {
+      case x :: xs =>
+        println(x._1.origin.start + ":" + x._1.origin.end)
+        println(x._2.origin.tokens)
+        val newTokens = generateTokens(x._2)
+        println(newTokens)
+        val modifiedTokens = originTokens.take(x._1.origin.startTokenPos) ++ newTokens ++ originTokens.drop(x._1.origin.endTokenPos)
+        replaceTokens(modifiedTokens, xs)
+      case Nil => originTokens
+    }
+    replaceTokens(originTree.origin.tokens, mods)
   }
 
   /*

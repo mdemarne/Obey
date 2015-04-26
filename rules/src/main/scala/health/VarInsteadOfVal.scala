@@ -14,9 +14,6 @@ import scala.obey.model._
       case Term.Assign(b: Term.Name, _) => b
     }.topDown feed { assign =>
       (transform {
-        case origin : Defn.Val =>
-          println(origin.origin.tokens)
-          origin andCollect Message("dd", origin)
         case origin @ Defn.Var(a, (p @ Pat.Var.Term(b: Term.Name)) :: Nil, c, Some(d)) if (!assign.contains(b)) =>
           val modified = Defn.Val(a, Pat.Var.Term(b) :: Nil, c, d)
           modified andCollect Message(s"The 'var' $b from ${origin} was never reassigned and should therefore be a 'val'", origin, Some(modified))
