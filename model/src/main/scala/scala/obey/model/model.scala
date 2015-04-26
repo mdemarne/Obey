@@ -10,7 +10,7 @@ import scala.reflect.io.AbstractFile
 package object model {
 
   /* Message type */
-  case class Message(message: String, originTree: scala.meta.Tree) {
+  case class Message(message: String, originTree: scala.meta.Tree, modifiedTree: Option[scala.meta.Tree] = None) {
     val position = getPos(originTree)
   }
 

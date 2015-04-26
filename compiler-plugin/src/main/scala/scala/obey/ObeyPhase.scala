@@ -31,11 +31,6 @@ trait ObeyPhase {
         val path = unit.source.path
         val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
-        // TODO: this should be done by scalahost ConvertPhase
-        /* Getting original tokens from source */
-        val content = unit.source.content.mkString("")
-        val originTokens = content.tokens
-
         /* Applying warnings */
         val simpleWarnings: List[Message] = UserOptions.getWarnings() match {
           case lst if lst.isEmpty => Nil
@@ -48,8 +43,9 @@ trait ObeyPhase {
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
             if (res.tree.isDefined && !res.result.isEmpty) {
+              val modifications = res.result.filter(x => x.modifiedTree.isDefined).map(x => (x.originTree, x.modifiedTree.get))
               //Persistence.archive(path) // TODO: uncomment
-              val newTokens = formatter.Merge(originTokens, originTree, res.tree.get)
+              val newTokens = formatter.Merge(originTree, res.tree.get, modifications)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
               Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test, here for testing
               res.result.map(m => Message("[CORRECTED] " + m.message, m.originTree))

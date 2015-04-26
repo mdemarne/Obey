@@ -5,8 +5,9 @@ import scala.meta._
 /* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
 
-  def apply(originTokens: Vector[Token], originTree: Tree, modifiedTree: Tree)(implicit c: semantic.Context): Vector[Token] = {
+  def apply(originTree: Tree, modifiedTree: Tree, modifications: List[(Tree, Tree)])(implicit c: semantic.Context): Vector[Token] = {
     // TODO
+    println(modifications)
     modifiedTree.toString.tokens
   }
 
