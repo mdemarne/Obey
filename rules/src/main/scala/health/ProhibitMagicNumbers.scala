@@ -5,12 +5,12 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala", "Completeness") object ProhibitMagicNumber extends Rule {
+@Tag("Scala", "Completeness") object ProhibitMagicNumber extends WarnRule {
 
   def description = "Prohibit magic numbers"
 
   def apply = collect {
-    case x: Lit.Int =>
-      Message("Better not use magic numbers!", x)
+    case t: Lit.Int =>
+      Message("Better not use magic numbers!", t)
   }.topDown
 }

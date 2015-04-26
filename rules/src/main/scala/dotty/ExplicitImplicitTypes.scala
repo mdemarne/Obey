@@ -8,7 +8,7 @@ import scala.meta.semantic._
 
 import scala.language.implicitConversions
 
-@Tag("Dotty") class ExplicitImplicitTypes(implicit c: Context) extends Rule {
+@Tag("Dotty") class ExplicitImplicitTypes(implicit c: Context) extends FixRule {
 
   def description = "Type inference for return types of implicit vals and defs isn't supported in Dotty"
 

@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala", "Completeness") object EnforceImplementation extends Rule {
+@Tag("Scala", "Completeness") object EnforceImplementation extends WarnRule {
 
   def description = "Enforce all implementation to be complete."
 

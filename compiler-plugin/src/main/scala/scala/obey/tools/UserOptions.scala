@@ -22,6 +22,12 @@ object UserOptions {
   /* Saving all loaded rules */
   var rules: Set[Rule] = Set()
 
+  /* If true, all the rules in obey-fix will be ran without modifying the source code.
+   * note that warnings rules will be applied as well. To explicitly desactivate them,
+   * the TagHolder has to be desactivated. This can be done by passing fix:-- as a
+   * compiler option. */
+  var dryrun = false
+
   /*  Various tag holders */
   private val fixes = TagHolder(Set(), Set(), false)
   private val warnings = TagHolder(Set(), Set(), true)
@@ -30,10 +36,14 @@ object UserOptions {
   val optMap = Map("fixes:" -> fixes, "warnings:" -> warnings)
 
   /* All methods to get the correct rules to apply */
-  def getFixes(allowedToRunOnly: Boolean = true): Set[Rule] = if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules
+  def getFixes(allowedToRunOnly: Boolean = true): Set[Rule] = {
+    (if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules).filter(_.isInstanceOf[FixRule])
+  }
 
   /* Avoids traversing the tree twice for format and warnings */
-  def getWarnings(allowedToRunOnly: Boolean = true): Set[Rule] = (if(allowedToRunOnly) warnings.getAllowedRules else warnings.getRules) -- this.getFixes(allowedToRunOnly)
+  def getWarnings(allowedToRunOnly: Boolean = true): Set[Rule] = {
+    (if(allowedToRunOnly) warnings.getAllowedRules else warnings.getRules).filter(_.isInstanceOf[WarnRule])
+  }
 
   /* Check whenever there are not rules to apply at all */
   def noRulesToApply: Boolean = fixes.getRules.isEmpty && warnings.getRules.isEmpty

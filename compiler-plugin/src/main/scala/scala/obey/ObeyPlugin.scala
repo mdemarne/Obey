@@ -69,6 +69,9 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
           if (!warnings.isEmpty) reporter.info(NoPosition, "Warning Rules:\n" + warnings.mkString("\n"), true)
           if (!fixes.isEmpty) reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
 
+        case _ if opt.equals("dryrun") =>
+          UserOptions.dryrun = true
+
         case othr =>
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")
       }
@@ -81,9 +84,10 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
   override val optionsHelp: Option[String] = Some("""
     | -P:obey:
-    |   fix:                Specifies filters for format
-    |   warn:               Specifies filter for warnings
-    |   addRules:           Specifies user defined rules
+    |   fixes:              Specifies filters for format
+    |   warning:            Specifies filter for warnings
+    |   addRulesDir:        Specifies user defined rules
+    |   addRulesJar:        Specifies a jar containing rules
     |   ListRules           Lists the rules to be used in the plugin
     |   ListRules: -all     Lists all the rules available
     |

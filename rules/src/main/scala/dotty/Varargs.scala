@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Dotty") object Varargs extends Rule {
+@Tag("Dotty") object Varargs extends WarnRule {
 
   def description = "Varargs are not allowed in Dotty"
 

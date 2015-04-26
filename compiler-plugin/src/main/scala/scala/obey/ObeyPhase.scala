@@ -42,7 +42,7 @@ trait ObeyPhase {
           case lst if lst.isEmpty => Nil
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
-            if (res.tree.isDefined && !res.result.isEmpty) {
+            if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
               val modifications = res.result.filter(x => x.modifiedTree.isDefined).map(x => (x.originTree, x.modifiedTree.get))
               //Persistence.archive(path) // TODO: uncomment
               val newTokens = formatter.Merge(originTree, res.tree.get, modifications)

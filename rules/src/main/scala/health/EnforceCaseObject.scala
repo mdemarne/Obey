@@ -5,7 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala", "Style") object EnforceCaseObject extends Rule {
+@Tag("Scala", "Style") object EnforceCaseObject extends FixRule {
 
   def description = "Enforce case objects rather than empty case classes"
 

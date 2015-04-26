@@ -6,7 +6,7 @@ import scala.meta.internal.ast._
 import scala.obey.model._
 
 /* TODO: cover assignment cases such as val (xx, yy) = (x.toList, y.toList) */
-@Tag("Scala", "ErrorProne") object SetToList extends Rule {
+@Tag("Scala", "ErrorProne") object SetToList extends WarnRule {
 
   def description = "defining Set.toList is defining a list but does not preserve ordering"
 
@@ -20,8 +20,6 @@ import scala.obey.model._
           message(sets.find(_._1 == n).get._2)
         case t @ Defn.Var(_, Pat.Var.Term(n: Term.Name) :: Nil, _, Some(Term.Apply(Term.Name("Set"), _))) if sets.exists(_._1 == n) =>
           message(sets.find(_._1 == n).get._2)
-        case t @ Term.Select(Term.Apply(Term.Name("Set"), l), Term.Name("toList")) =>
-          message(t)
       }.topDown
     })
 }
