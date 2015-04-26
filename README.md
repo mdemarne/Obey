@@ -12,6 +12,8 @@ Obey is  a linter tool for Scala. It enables to define health rules, which can e
 
 Obey is based on the TQL library and works on top of Scala.Meta trees, which can seamlessly be transformed from Scala trees, and can operate at both the syntactic and semantic level.
 
+**Obey temporarily uses a modified version of Scala.Meta Scalahost, which you can clone at https://github.com/mdemarne/scalahost. Simply run `sbt publishLocal` in the root directory, and then use Obey as always.**
+
 ### As a compiler plugin
 
 In order to use the Obey as a compiler plugin, that runs a phase called 'obey', use the following line:
@@ -87,7 +89,7 @@ Corresponding tags are put into brackets.
   - `[Dotty] EarlyInitializer`: Early initializers are not supported in Dotty
   - `[Dotty] Varargs`: Varargs are not supported in Dotty
 
-##### Comming rules
+##### Coming rules
 
 This is a non-exhaustive list of coming rules:
 
