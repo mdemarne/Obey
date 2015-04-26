@@ -8,6 +8,7 @@ object Merge {
   def apply(originTree: Tree, modifiedTree: Tree, modifications: List[(Tree, Tree)])(implicit c: semantic.Context): Vector[Token] = {
     // TODO
     println(modifications)
+    modifications.foreach(mod => println(mod._1.origin.start + " : " + mod._2.origin.start))
     modifiedTree.toString.tokens
   }
 
