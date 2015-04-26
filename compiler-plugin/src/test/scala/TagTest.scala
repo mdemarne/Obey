@@ -10,7 +10,7 @@ import scala.meta.tql._
 
 class TagTest extends FunSuite {
 
-  @Tag("Dummy") case object DummyRule extends Rule {
+  @Tag("Dummy") case object DummyRule extends FixRule {
     val description ="Dummy Rule for testing"
     val apply = collect {
       case x: Defn.Def => Message("Found a Def!", x)
