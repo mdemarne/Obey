@@ -52,7 +52,7 @@ trait ObeyPhase {
               val newTokens = formatter.Merge(originTokens, originTree, res.tree.get)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
               Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test, here for testing
-              res.result.map(m => Message("[CORRECTED] " + m.message, m.modifiedTree))
+              res.result.map(m => Message("[CORRECTED] " + m.message, m.originTree))
             } else res.result
         }
 

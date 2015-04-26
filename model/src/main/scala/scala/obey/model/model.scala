@@ -10,8 +10,8 @@ import scala.reflect.io.AbstractFile
 package object model {
 
   /* Message type */
-  case class Message(message: String, modifiedTree: scala.meta.Tree) {
-    val position = getPos(modifiedTree)
+  case class Message(message: String, originTree: scala.meta.Tree) {
+    val position = getPos(originTree)
   }
 
   /* Represents the tags used to handle the rule filtering */
@@ -32,15 +32,11 @@ package object model {
   }
 
   private def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
-    t.origin match {
-      case x: Origin.Parsed =>
-          x.input match {
-            case Input.None => NoPosition
-            case in: Input.File =>
-              val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
-              new RangePosition(sourceFile, x.start, x.start, x.end)
-          }
-      case _ => NoPosition
+    t.origin.input match {
+      case Input.None => NoPosition
+      case in: Input.File =>
+        val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
+        new RangePosition(sourceFile, t.origin.start, t.origin.start, t.origin.end)
     }
   }
 
