@@ -48,10 +48,10 @@ trait ObeyPhase {
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
             if (res.tree.isDefined && !res.result.isEmpty) {
-              //Persistence.archive(path) // TODO: uncomment
+              Persistence.archive(path)
               val newTokens = formatter.Merge(originTokens, originTree, res.tree.get)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test, here for testing
+              Persistence.persist(path, formatter.Print(newTokens))
               res.result.map(m => Message("[CORRECTED] " + m.message, m.originTree))
             } else res.result
         }
