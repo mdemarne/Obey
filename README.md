@@ -78,6 +78,7 @@ Corresponding tags are put into brackets.
   - `[Scala, ErrorProne] SetToList`: Prevent transforming set to lists, as it does not preserve the ordering
   - `[Scala, Style] ProhibitImperativeCalls`: Prevent the call to imperative keywords such as `return`
   - `[Scala, Style] ProhibitWhileLoop`: Prevent the use of `while` and `do` - better use recursive calls
+  - `[Scala, ErrorProne] ErrorProneOneLiners`: Correcting error-prone one-liners
   - `[Scala, ErrorProne] VarInsteadOfVal`: Prevent the use of vars when possible
   - `[Scala, ErrorProne] ProhibitNullLit`: Prohibit null literal
   - `[Scala, Completeness] ProhibitMagicNumber`: Prohibit magic numbers
