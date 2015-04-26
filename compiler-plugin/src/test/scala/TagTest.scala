@@ -21,13 +21,13 @@ class TagTest extends FunSuite {
     UserOptions.rules += DummyRule
     UserOptions.addTags("fixes:+{Dummy*}")
     assert(UserOptions.rules.size > 0)
-    assert(UserOptions.getFixes.size > 0)
+    assert(UserOptions.getFixes().size > 0)
   }
 
   test("Removing rule to filer") {
     UserOptions.addTags("fixes:-{Dummy*}")
     assert(UserOptions.rules.size > 0)
-    assert(UserOptions.getFixes.size == 0)
+    assert(UserOptions.getFixes().size == 0)
   }
 
   test("Parsing multiple arguments") {
