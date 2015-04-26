@@ -5,6 +5,7 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
+/* TODO: cover assignment cases such as val (xx, yy) = (x.toList, y.toList) */
 @Tag("Scala", "ErrorProne") object SetToList extends Rule {
 
   def description = "defining Set.toList is defining a list but does not preserve ordering"

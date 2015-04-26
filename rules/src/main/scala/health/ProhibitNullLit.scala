@@ -11,6 +11,6 @@ import scala.obey.model._
 
   def apply = collect {
     case x: Lit.Null =>
-      Message("The null literal should not be used in Scala", x)
+      Message("The null literal should not be used in Scala. Use Options instead.", x)
   }.topDown
 }

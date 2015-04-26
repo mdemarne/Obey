@@ -11,6 +11,6 @@ import scala.obey.model._
 
   def apply = collect {
     case t: Term.TryWithCases =>
-      Message(s"Instead of try/catch, you should use the Try object", t)
+      Message(s"Instead of try/catch, use the Try object", t)
   }.topDown
 }
