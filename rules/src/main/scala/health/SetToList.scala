@@ -12,11 +12,13 @@ import scala.obey.model._
   def message(t: Term.Select): Message = Message(s"The assignment $t creates a list from a set and doest not preserve ordering", t)
 
   def apply = (collect[Set] {
-      case Term.Apply(b: Term.Name, _) if b.value == "Set" => b
+      case sel @ Term.Select(x: Term.Name, Term.Name("toList")) => (x, sel)
     }.topDown feed { sets =>
       collect {
-        case t @ Term.Select(x: Term.Name, Term.Name("toList")) if sets.contains(x) =>
-          message(t)
+        case t @ Defn.Val(_, Pat.Var.Term(n: Term.Name) :: Nil, _, Term.Apply(Term.Name("Set"), _)) if sets.exists(_._1 == n) =>
+          message(sets.find(_._1 == n).get._2)
+        case t @ Defn.Var(_, Pat.Var.Term(n: Term.Name) :: Nil, _, Some(Term.Apply(Term.Name("Set"), _))) if sets.exists(_._1 == n) =>
+          message(sets.find(_._1 == n).get._2)
         case t @ Term.Select(Term.Apply(Term.Name("Set"), l), Term.Name("toList")) =>
           message(t)
       }.topDown
