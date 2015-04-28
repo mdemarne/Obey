@@ -3,9 +3,7 @@ package scala.obey.model
 import scala.meta.tql._
 
 /* Rule implementation definition */
-trait Rule {
-
-  def isFix: Boolean
+sealed trait Rule {
 
   def description: String
 
@@ -19,5 +17,5 @@ trait Rule {
 
 }
 
-trait FixRule extends Rule { val isFix = true }
-trait WarnRule extends Rule { val isFix = true }
+trait FixRule extends Rule
+trait WarnRule extends Rule
