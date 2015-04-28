@@ -21,15 +21,18 @@ object Merge {
 
     def replaceTokens(originTokens: Seq[Token], mods: List[(Tree, Tree)]): Seq[Token] = mods match {
       case x :: xs =>
-        println(x._1.origin.start + ":" + x._1.origin.end)
-        println(x._2.origin.tokens)
+        /* TODO: recurse in modified trees to find similarities. This will need to keep the various offsets for token modifications in mind */
         val newTokens = generateTokens(x._2)
-        println(newTokens)
-        val modifiedTokens = originTokens.take(x._1.origin.startTokenPos) ++ newTokens ++ originTokens.drop(x._1.origin.endTokenPos)
+        val modifiedTokens = originTokens.take(x._1.origin.startTokenPos) ++ newTokens ++ originTokens.drop(x._1.origin.endTokenPos + 1)
         replaceTokens(modifiedTokens, xs)
       case Nil => originTokens
     }
-    replaceTokens(originTree.origin.tokens, mods)
+
+    /* TODO: first step, find interleaved modifications in trees */
+    /* second step, once the least upper bounds of modification found, sort those upper bounds */
+    val sortedMods = mods.sortBy(-_._1.origin.startTokenPos)
+    /* Change the token stream based on those modification from bottom to top to avoid problems in token overlaps. */
+    replaceTokens(originTree.origin.tokens, sortedMods)
   }
 
   /*
@@ -39,7 +42,7 @@ object Merge {
    *    1. The direct mapping between original tokens and original trees
    *        TODO: not obvious
    *    2. Mapping between original trees and modified trees
-   *      => Easy, using TQL => #
+   *      => Easy, using TQL => # => But still need to find upper bounds
    * Step2: get tokens for those part of trees (using pretty printing and reparsing, as it's not available since it does not come from any source)
    * Step3: Update original toke stream based on the various modifed token stream generated above.This merge should:
    *  1. Keep layout around the modification as before
