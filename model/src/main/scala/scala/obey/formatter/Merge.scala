@@ -7,6 +7,8 @@ import scala.reflect.ClassTag
 
 /* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
+  /* TODO: NOTE THAT THIS UNDER HUGE CHANGES. I AM BASICALLY ONLY EXPERIMENTING HERE TO FIND THE BEST SOLUTION WITH THE
+   * INFORMATION AVAILABLE AND AT A MINIMUM COST */
 
   type Modif = (Tree, Tree)
   implicit class RichModif(mod: Modif) {
