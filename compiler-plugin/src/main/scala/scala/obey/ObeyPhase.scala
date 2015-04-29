@@ -51,7 +51,7 @@ trait ObeyPhase {
               res.result.map (m =>
                 m.modifiedTree match {
                   case None => m /* Only writing "CORRECTED" for trees containing a modified subtree */
-                  case Some(tree) => Message("[CORRECTED] " + m.message, m.originTree)
+                  case Some(tree) => Message("[FIXED] " + m.message, m.originTree)
               })
             } else res.result
         }

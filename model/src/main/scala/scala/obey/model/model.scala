@@ -31,6 +31,19 @@ package object model {
     }
   }
 
+  /*def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
+    try {
+      import scala.language.reflectiveCalls
+      //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
+      //val associatedGtree = scratchpads.values.toList.head.asInstanceOf[List[_]].collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
+      val scratchpad = t.asInstanceOf[{ def scratchpad: Seq[Any] }].scratchpad
+      val associatedGtree = scratchpad.collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
+      associatedGtree.pos
+    } catch {
+      case e: Exception => println(e);NoPosition
+    }
+  }*/
+
   private def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
     t.origin.input match {
       case Input.None => NoPosition
