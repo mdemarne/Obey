@@ -15,6 +15,10 @@ object Merge {
   }
 
   def apply(originTree: Tree, modifiedTree: Tree, mods: List[Modif], offset: Int = 0)(implicit c: semantic.Context): Seq[Token] = {
+
+
+    debug(mods)
+
     // TODO: keep layout and re-apply it to modified trees
     def generateTokens(tree: Tree) = {
       val newCode = tree.show[Code]
@@ -35,7 +39,7 @@ object Merge {
     }
 
     /* First step, find interleaved modifications in trees */
-    val groupedByInterleaved:List[(Modif, List[Modif])] = {
+    /*val groupedByInterleaved:List[(Modif, List[Modif])] = {
       val sortedMods = mods.groupBy(_.start).toList.map(_._2).map(_.sortBy(-_.end)).flatten
       def loop(groups: List[(Modif, List[Modif])], in: List[Modif]): List[(Modif, List[Modif])] = in match {
         case x :: xs =>
@@ -48,7 +52,7 @@ object Merge {
         case Nil => groups
       }
       loop(Nil, sortedMods)
-    }
+    }*/
     /* TODO: Once this is done, recurse in each interleaved modifications - this should yield a sequence of token to introduce. 
      * Note that this will essentially be a call to Merge, hence it is required that Merge can take as input a Modif as (Tree, Tree) and as (Tree, Seq[Token]) */
     
@@ -74,4 +78,16 @@ object Merge {
    *      TODO: there might be another, cleaner way to do this, but we would need to map trees into tokens anyways.
    *      TODO: scala-refactoring for instance uses specific "layout" classes, but add specific strings.
    */
+
+   /* TODO: remove */
+   def debug(mods: List[Modif]) = {
+    println("==========================================================================")
+    mods.foreach { m => 
+      println(m.start + ":" + m.end) 
+      println(m._1.show[Raw])
+      println(m._2.show[Raw])
+      println("------------------------------------------------------------------------")
+    }
+    println("==========================================================================")
+   }
 }
