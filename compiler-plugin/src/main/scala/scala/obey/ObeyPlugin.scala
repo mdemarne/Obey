@@ -43,13 +43,17 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
         /* Rule directory */
         case _ if opt.startsWith("obeyRulesDir:") =>
-          val rulesDir = opt.stripPrefix("obeyRulesDir:")
-          UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromDir.toSet
+          val rulesDirs = opt.stripPrefix("obeyRulesDir:").split(";")
+          rulesDirs.foreach { rulesDir =>
+            UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromDir.toSet
+          }
 
         /* Rule jar */
-        case _ if opt.startsWith("obeyRulesjar:") =>
-          val rulesDir = opt.stripPrefix("obeyRulesJar:")
-          UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromJar.toSet
+        case _ if opt.startsWith("obeyRulesJar:") =>
+          val rulesDirs = opt.stripPrefix("obeyRulesJar:").split(";")
+          rulesDirs.foreach { rulesDir =>
+            UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromJar.toSet
+          }
 
         /* Processing options */
         case _ if UserOptions.optMap.keys.exists(s => opt.startsWith(s)) =>
