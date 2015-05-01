@@ -45,7 +45,7 @@ trait ObeyPhase {
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
               val modifications = res.result.filter(_.modifiedTokensOpt.isDefined).map(x => (x.originTree, x.modifiedTokensOpt.get))
               //Persistence.archive(path) // TODO: uncomment
-              val newTokens = formatter.Merge(originTree, res.tree.get, modifications)
+              val newTokens = formatter.Merge(originTree, originTree.showTokens, modifications)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
               Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test
               res.result.map (m =>

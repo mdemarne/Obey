@@ -19,10 +19,52 @@ object Merge {
     def end = mod._1.origin.endTokenPos
   }
 
-  def apply(originTree: Tree, modifiedTree: Tree, mods: List[Modif], offset: Int = 0)(implicit c: semantic.Context): Seq[Token] = {
+  /* TODO: there is still a problem with the positions of modification: this may have changed in the modifiedToken and needs to be taken into account 
+   * This can be achieved by keeping a mapping of unmodified parts of tree inside messages. In all situations, one rule will them must be independant
+   * of another one and not modify the same part of trees. In doing the recursion below, we will know which parts of trees were kept as is, and be 
+   * able to determine in which part of the tree the modifications should occur. 
+   *
+   * This current implementation assumes that all parts of trees will be modified by a tree of the same size in term of tokens, which might not be 
+   * true (and will not be in many cases. */
+  def apply(originTree: Tree, modifiedTokens: Seq[Token], mods: List[Modif])(implicit c: semantic.Context): Seq[Token] = mods match {
+    case Nil => modifiedTokens
+    case lst =>
+      debug(mods) 
+      /* Sorting tokens by starting positions */
+      val sortedMods = mods.sortBy(_.start)
+      /* Grouping imbricated modifications */
+      val groupedMods = {
+        def loop(masterMod: Modif, attachedMods: List[Modif], mods: List[Modif]): List[(Modif, List[Modif])] = mods match {
+          case x :: xs if masterMod.start <= x.start && masterMod.end >= x.end =>
+            loop(masterMod, attachedMods :+ x, xs)
+          case x :: xs =>
+            (masterMod, attachedMods) :: loop(x, Nil, xs)
+          case Nil => (masterMod, attachedMods) :: Nil
+        }
+        loop(sortedMods.head, Nil, sortedMods.tail)
+      }
+      /* Flattening all imbricated modifications into a reversed sequence of modifications */
+      val flattenMods: List[Modif] = groupedMods.map { stackedMod =>
+        (stackedMod._1._1, Merge(stackedMod._1._1, stackedMod._1._2, stackedMod._2))
+      }.reverse
+
+      /* Replacing modified tokens inside the main sequence */
+      val replacedTokens = {
+        def loop(master: Seq[Token], stack: List[Modif]) = stack match {
+          case Nil => master
+          case x :: xs => 
+            val offset = originTree.start
+            master.take(x.start - offset) ++ x._2 ++ master.drop(x.end + 1 - offset)
+        }
+        loop(modifiedTokens, flattenMods)
+      }
+
+      /* Returning all the sequences of tokens */
+      replacedTokens
 
 
-    debug(mods)
+    /*  OLD FUNCTS, WILL HAVE TO BE REMOVED SOONISH */
+
 
     /*def replaceTokens(originTokens: Seq[Token], mods: List[Modif]): Seq[Token] = mods match {
       case x :: xs =>
@@ -51,10 +93,8 @@ object Merge {
     /* TODO: Once this is done, recurse in each interleaved modifications - this should yield a sequence of token to introduce. 
      * Note that this will essentially be a call to Merge, hence it is required that Merge can take as input a Modif as (Tree, Tree) and as (Tree, Seq[Token]) */
     
-    /* second step, once the least upper bounds of modification found, sort those upper bounds */
-    val sortedMods = mods.sortBy(-_.start)
     /* Change the token stream based on those modification from bottom to top to avoid problems in token overlaps. */
-    originTree.showTokens
+     //originTree.showTokens
   }
 
   /*
