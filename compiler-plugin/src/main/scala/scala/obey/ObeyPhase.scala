@@ -43,13 +43,13 @@ trait ObeyPhase {
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
-              val modifications = res.result.filter(x => x.modifiedTree.isDefined).map(x => (x.originTree, x.modifiedTree.get))
+              val modifications = res.result.filter(_.modifiedTokensOpt.isDefined).map(x => (x.originTree, x.modifiedTokensOpt.get))
               //Persistence.archive(path) // TODO: uncomment
               val newTokens = formatter.Merge(originTree, res.tree.get, modifications)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
               Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test
               res.result.map (m =>
-                m.modifiedTree match {
+                m.modifiedTokensOpt match {
                   case None => m /* Only writing "CORRECTED" for trees containing a modified subtree */
                   case Some(tree) => Message("[FIXED] " + m.message, m.originTree)
               })

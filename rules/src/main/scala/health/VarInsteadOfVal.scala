@@ -13,10 +13,10 @@ import scala.obey.model._
     collect[Set] {
       case Term.Assign(b: Term.Name, _) => b
     }.topDown feed { assign =>
-      (transform {
+      (collect {
         case origin @ Defn.Var(a, (p @ Pat.Var.Term(b: Term.Name)) :: Nil, c, Some(d)) if (!assign.contains(b)) =>
           val modified = Defn.Val(a, Pat.Var.Term(b) :: Nil, c, d)
-          modified andCollect Message(s"The 'var' $b from ${origin} was never reassigned and should therefore be a 'val'", origin, Some(modified))
+          Message(s"The 'var' $b from ${origin} was never reassigned and should therefore be a 'val'", origin, modified.showTokens)
       }).topDown
     }
   }

@@ -1,5 +1,7 @@
 package scala.obey.formatter
 
+import scala.obey.model._
+
 import scala.meta._
 import scala.meta.dialects.Scala211
 
@@ -7,10 +9,11 @@ import scala.reflect.ClassTag
 
 /* Formal a list of tokens based on the original tree and the modified tree */
 object Merge {
+
   /* TODO: NOTE THAT THIS UNDER HUGE CHANGES. I AM BASICALLY ONLY EXPERIMENTING HERE TO FIND THE BEST SOLUTION WITH THE
    * INFORMATION AVAILABLE AND AT A MINIMUM COST */
 
-  type Modif = (Tree, Tree)
+  type Modif = (Tree, Seq[Token])
   implicit class RichModif(mod: Modif) {
     def start = mod._1.origin.startTokenPos
     def end = mod._1.origin.endTokenPos
@@ -21,24 +24,14 @@ object Merge {
 
     debug(mods)
 
-    // TODO: keep layout and re-apply it to modified trees
-    def generateTokens(tree: Tree) = {
-      val newCode = tree.show[Code]
-      val newParse = tree match {
-        case _: Source => newCode.parse[Source]
-        case _: Stat => newCode.parse[Stat]
-      }
-      newParse.origin.tokens
-    }
-
-    def replaceTokens(originTokens: Seq[Token], mods: List[Modif]): Seq[Token] = mods match {
+    /*def replaceTokens(originTokens: Seq[Token], mods: List[Modif]): Seq[Token] = mods match {
       case x :: xs =>
         /* TODO: recurse in modified trees to find similarities. This will need to keep the various offsets for token modifications in mind */
         val newTokens = generateTokens(x._2)
         val modifiedTokens = originTokens.take(x.start - offset) ++ newTokens ++ originTokens.drop(x.end + 1 - offset)
         replaceTokens(modifiedTokens, xs)
       case Nil => originTokens
-    }
+    }*/
 
     /* First step, find interleaved modifications in trees */
     /*val groupedByInterleaved:List[(Modif, List[Modif])] = {
@@ -59,9 +52,9 @@ object Merge {
      * Note that this will essentially be a call to Merge, hence it is required that Merge can take as input a Modif as (Tree, Tree) and as (Tree, Seq[Token]) */
     
     /* second step, once the least upper bounds of modification found, sort those upper bounds */
-    val sortedMods = mods.sortBy(-_._1.origin.startTokenPos)
+    val sortedMods = mods.sortBy(-_.start)
     /* Change the token stream based on those modification from bottom to top to avoid problems in token overlaps. */
-    replaceTokens(originTree.origin.tokens, sortedMods)
+    originTree.showTokens
   }
 
   /*
@@ -87,7 +80,7 @@ object Merge {
     mods.foreach { m => 
       println(m.start + ":" + m.end) 
       println(m._1.show[Raw])
-      println(m._2.show[Raw])
+      println(m._2)
       println("------------------------------------------------------------------------")
     }
     println("==========================================================================")

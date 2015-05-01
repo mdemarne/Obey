@@ -1,17 +1,24 @@
 package scala.obey
 
-import scala.meta.{ Origin, Input }
+import scala.meta._
 
 import scala.annotation.StaticAnnotation
 import scala.reflect.internal.util.{ NoPosition, RangePosition, ScriptSourceFile }
 import scala.reflect.runtime.{ currentMirror => cm, universe => ru }
 import scala.reflect.io.AbstractFile
 
+import scala.meta.dialects.Scala211 // TODO: pass that as a parameter, since it might run on Dotty.
+
 package object model {
 
-  /* Message type */
-  case class Message(message: String, originTree: scala.meta.Tree, modifiedTree: Option[scala.meta.Tree] = None) {
+  /** Message type returned by applying a rule */
+  case class Message(message: String, originTree: Tree, modifiedTokensOpt: Option[Seq[Token]]) {
     val position = getPos(originTree)
+  }
+
+  object Message {
+    def apply(message: String, originTree: Tree): Message = Message(message, originTree, None)
+    def apply(message: String, originTree: Tree, modifiedTokens: Seq[Token]): Message = Message(message, originTree, Some(modifiedTokens))
   }
 
   /* Represents the tags used to handle the rule filtering */
@@ -31,7 +38,7 @@ package object model {
     }
   }
 
-  /*def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
+  /*def getPos(t: Tree): scala.reflect.internal.util.Position = {
     try {
       import scala.language.reflectiveCalls
       //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
@@ -44,7 +51,8 @@ package object model {
     }
   }*/
 
-  private def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
+  /* TODO: if required, move into Message */
+  private def getPos(t: Tree): scala.reflect.internal.util.Position = {
     t.origin.input match {
       case Input.None => NoPosition
       case in: Input.File =>
@@ -58,6 +66,20 @@ package object model {
     def getTags: Set[String] = {
       val tags = cm.classSymbol(rule.getClass).annotations.filter(a => a.tree.tpe =:= ru.typeOf[Tag]).flatMap(_.tree.children.tail)
       tags.map(y => ru.show(y).toString).map(_.replaceAll("\"", "").toLowerCase).toSet
+    }
+  }
+
+  /* Rich manipulation on Trees - using the ScalaMeta prettyprinter if required */
+  implicit class RichTree(t: Tree) {
+    /* TODO: move this to show[Tokens] later, when it is implemented */
+     def showTokens = t.origin match {
+      case Origin.None =>      
+        val newCode = t.show[Code] 
+        t match {
+          case _: Source => newCode.parse[Source].origin.tokens
+          case _: Stat => newCode.parse[Stat].origin.tokens
+        }
+      case or => or.tokens
     }
   }
 }

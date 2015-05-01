@@ -17,5 +17,9 @@ sealed trait Rule {
 
 }
 
-trait FixRule extends Rule
-trait WarnRule extends Rule
+trait FixRule extends Rule {
+	def apply: Matcher[List[Message]]
+}
+trait WarnRule extends Rule {
+	def apply: Matcher[List[Message]]
+}
