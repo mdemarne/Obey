@@ -38,26 +38,14 @@ package object model {
     }
   }
 
-  /*def getPos(t: Tree): scala.reflect.internal.util.Position = {
-    try {
-      import scala.language.reflectiveCalls
-      //val scratchpads = t.asInstanceOf[{ def internalScratchpads: Map[_, _] }].internalScratchpads
-      //val associatedGtree = scratchpads.values.toList.head.asInstanceOf[List[_]].collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
-      val scratchpad = t.asInstanceOf[{ def scratchpad: Seq[Any] }].scratchpad
-      val associatedGtree = scratchpad.collect { case gtree: scala.reflect.internal.SymbolTable#Tree => gtree }.head
-      associatedGtree.pos
-    } catch {
-      case e: Exception => println(e);NoPosition
-    }
-  }*/
-
-  /* TODO: if required, move into Message */
   private def getPos(t: Tree): scala.reflect.internal.util.Position = {
     t.origin.input match {
-      case Input.None => NoPosition
       case in: Input.File =>
         val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
-        new RangePosition(sourceFile, t.origin.start, t.origin.start, t.origin.end)
+        val start = t.origin.position.start.offset
+        val end = t.origin.position.end.offset
+        new RangePosition(sourceFile, start, start, end)
+      case _ => NoPosition
     }
   }
 
@@ -66,20 +54,6 @@ package object model {
     def getTags: Set[String] = {
       val tags = cm.classSymbol(rule.getClass).annotations.filter(a => a.tree.tpe =:= ru.typeOf[Tag]).flatMap(_.tree.children.tail)
       tags.map(y => ru.show(y).toString).map(_.replaceAll("\"", "").toLowerCase).toSet
-    }
-  }
-
-  /* Rich manipulation on Trees - using the ScalaMeta prettyprinter if required */
-  implicit class RichTree(t: Tree) {
-    /* TODO: move this to show[Tokens] later, when it is implemented */
-     def showTokens = t.origin match {
-      case Origin.None =>      
-        val newCode = t.show[Code] 
-        t match {
-          case _: Source => newCode.parse[Source].origin.tokens
-          case _: Stat => newCode.parse[Stat].origin.tokens
-        }
-      case or => or.tokens
     }
   }
 }
