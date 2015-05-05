@@ -17,12 +17,12 @@ import scala.language.implicitConversions
   /* Casting from one ast.Type to the internal one */
   implicit def tpeCast(tpe: scala.meta.Type) = tpe.asInstanceOf[scala.meta.internal.ast.Type]
 
-  def apply = collect {
+  def apply = transform {
     case origin @ Defn.Val(mods, (name: Term.Name) :: Nil, None, rhs) if mods.exists(_.isInstanceOf[Mod.Implicit]) =>
       val modified = Defn.Val(mods, (name: Term.Name) :: Nil, Some(rhs.tpe), rhs) 
-      message(origin, rhs.tpe)
+      modified andCollect message(origin, rhs.tpe)
     case origin @ Defn.Def(mods, name, tparams, paramss, None, body) if origin.isImplicit =>
       val modified = Defn.Def(mods, name, tparams, paramss, Some(body.tpe), body) 
-      message(origin, body.tpe)
+      modified andCollect message(origin, body.tpe)
   }.topDown
 }
