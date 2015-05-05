@@ -7,8 +7,6 @@ import scala.obey.model._
 import scala.obey.tools._
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.{PluginComponent => NscPluginComponent}
-import scala.meta.dialects.Dotty
-import scala.meta.ui._
 
 trait ObeyPhase {
   self: ObeyPlugin =>
@@ -43,16 +41,10 @@ trait ObeyPhase {
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
-              val modifications = res.result.filter(_.modifiedTokensOpt.isDefined).map(x => (x.originTree, x.modifiedTokensOpt.get))
-              //Persistence.archive(path) // TODO: uncomment
-              val newTokens = formatter.Merge(originTree, originTree.showTokens, modifications)
+              Persistence.archive(path)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path + ".test", formatter.Print(newTokens)) // TODO: remove .test
-              res.result.map (m =>
-                m.modifiedTokensOpt match {
-                  case None => m /* Only writing "CORRECTED" for trees containing a modified subtree */
-                  case Some(tree) => Message("[FIXED] " + m.message, m.originTree)
-              })
+              Persistence.persist(path, res.tree.toString)
+              res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }
 

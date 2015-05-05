@@ -12,10 +12,10 @@ import scala.obey.model._
   def apply = collect {
       case origin @ Term.Select(Term.Apply(Term.Name("List"), l), Term.Name("toSet")) =>
         val modified = Term.Apply(Term.Name("Set"), l)
-        Message(s"The assignment creates a useless List", origin, modified.showTokens)
+        Message(s"The assignment creates a useless List", origin)
         case origin @ Term.Select(Term.Apply(Term.Name("Set"), l), Term.Name("toList")) =>
         val modified = Term.Apply(Term.Name("List"), l)
-        Message(s"The assignment creates a useless Set. Note that the order of the element is not guaranteed.", origin, modified.showTokens)
+        Message(s"The assignment creates a useless Set. Note that the order of the element is not guaranteed.", origin)
       // TODO: add more one-liners
     }.topDown
 

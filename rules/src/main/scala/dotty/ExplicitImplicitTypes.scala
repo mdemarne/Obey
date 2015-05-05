@@ -12,7 +12,7 @@ import scala.language.implicitConversions
 
   def description = "Type inference for return types of implicit vals and defs isn't supported in Dotty"
 
-  def message(origin: Tree, modified: Tree, tpe: Type) = Message(s"result type ($tpe) of implicit definition needs to be given explicitly", origin, modified.showTokens)
+  def message(origin: Tree, tpe: Type) = Message(s"result type ($tpe) of implicit definition needs to be given explicitly", origin)
 
   /* Casting from one ast.Type to the internal one */
   implicit def tpeCast(tpe: scala.meta.Type) = tpe.asInstanceOf[scala.meta.internal.ast.Type]
@@ -20,9 +20,9 @@ import scala.language.implicitConversions
   def apply = collect {
     case origin @ Defn.Val(mods, (name: Term.Name) :: Nil, None, rhs) if mods.exists(_.isInstanceOf[Mod.Implicit]) =>
       val modified = Defn.Val(mods, (name: Term.Name) :: Nil, Some(rhs.tpe), rhs) 
-      message(origin, modified, rhs.tpe)
+      message(origin, rhs.tpe)
     case origin @ Defn.Def(mods, name, tparams, paramss, None, body) if origin.isImplicit =>
       val modified = Defn.Def(mods, name, tparams, paramss, Some(body.tpe), body) 
-      message(origin, modified, body.tpe)
+      message(origin, body.tpe)
   }.topDown
 }

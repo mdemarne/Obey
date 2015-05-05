@@ -12,13 +12,8 @@ import scala.meta.dialects.Scala211 // TODO: pass that as a parameter, since it 
 package object model {
 
   /** Message type returned by applying a rule */
-  case class Message(message: String, originTree: Tree, modifiedTokensOpt: Option[Seq[Token]]) {
+  case class Message(message: String, originTree: Tree) {
     val position = getPos(originTree)
-  }
-
-  object Message {
-    def apply(message: String, originTree: Tree): Message = Message(message, originTree, None)
-    def apply(message: String, originTree: Tree, modifiedTokens: Seq[Token]): Message = Message(message, originTree, Some(modifiedTokens))
   }
 
   /* Represents the tags used to handle the rule filtering */
