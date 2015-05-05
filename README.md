@@ -89,7 +89,7 @@ Corresponding tags are put into brackets.
   - `[Scala, ErrorProne] ProhibitNullLit`: Prohibit null literal
   - `[Scala, Completeness] ProhibitMagicNumber`: Prohibit magic numbers
   - `[Scala, Completeness] EnforceImplementation`: Prohibit lack of implementation (???)
-  - `[Scala, Style] EnforceCaseObject`: Prohibit empty case classes: better use a case object (sometimes!)
+  - `[Scala, Style] UnhealyOneLiner`: Return warning for some one nice liners (for example, having a case class with no body and no parameter is not really interesting, better use a case object)!
 - dotty (rules specific to Dotty):
   - `[Dotty] ExplicitImplicitTypes`: Forbidding implicit types
   - `[Dotty] EarlyInitializer`: Early initializers are not supported in Dotty
@@ -135,7 +135,7 @@ The apply method uses the TQL library. For more details on how to use TQL, see t
 case class Message(
   message: String,
   originTree: scala.meta.Tree,
-  modifiedTree: Option[scala.meta.Tree] = None
 )
 ```
-The `message` is the string that will be printed, the `originTree` is the subtree that raised the warning (and its position will be used by the compilation reporter), and the `modifiedTree` is the modified equivalent of the `originTree`. Note that this one can be `None`, as `WarnRule` do not modify trees, and therefore does not require to return a modified tree.
+
+The `message` is the string that will be printed, the `originTree` is the subtree that raised the warning (and its position will be used by the compilation reporter).
