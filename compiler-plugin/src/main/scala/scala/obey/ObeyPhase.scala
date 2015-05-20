@@ -48,7 +48,7 @@ trait ObeyPhase {
             } else res.result
         }
 
-        (simpleWarnings ++ fixWarnings).foreach(m => reporter.warning(m.position, m.message))
+        (simpleWarnings ++ fixWarnings).foreach(m => reporter.warning(m.positionIn(path), m.message))
       }
     }
   }

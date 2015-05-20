@@ -13,7 +13,11 @@ package object model {
 
   /** Message type returned by applying a rule */
   case class Message(message: String, originTree: Tree) {
-    val position = getPos(originTree)
+    // TODO: temporary get positions passing the source file.
+    // This will be removed once trees coming from scalac will be enhanced to contain
+    // layout information (e.g. tokens, etc).
+    // See https://github.com/scalameta/scalahost/pull/87 and https://github.com/scalameta/scalahost/pull/93 for details.
+    def positionIn(path: String) = getPos(originTree, path)
   }
 
   /* Represents the tags used to handle the rule filtering */
@@ -33,13 +37,16 @@ package object model {
     }
   }
 
-  private def getPos(t: Tree): scala.reflect.internal.util.Position = {
-    t.input match {
-      case in: Input.File =>
-        val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.chars)
+  private def getPos(t: Tree, path: String): scala.reflect.internal.util.Position = {
+    def withContent(content: Array[Char]): scala.reflect.internal.util.Position = {
+        val sourceFile = ScriptSourceFile(AbstractFile.getFile(path), content)
         val start = t.position.start.offset
         val end = t.position.end.offset
         new RangePosition(sourceFile, start, start, end)
+    }
+    t.input match {
+      case in: Input.File => withContent(in.chars)
+      case in: Input.String =>withContent(in.chars)
       case _ => NoPosition
     }
   }
