@@ -34,11 +34,11 @@ package object model {
   }
 
   private def getPos(t: Tree): scala.reflect.internal.util.Position = {
-    t.origin.input match {
+    t.input match {
       case in: Input.File =>
-        val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
-        val start = t.origin.position.start.offset
-        val end = t.origin.position.end.offset
+        val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.chars)
+        val start = t.position.start.offset
+        val end = t.position.end.offset
         new RangePosition(sourceFile, start, start, end)
       case _ => NoPosition
     }
