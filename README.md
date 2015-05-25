@@ -85,6 +85,7 @@ Corresponding tags are put into brackets.
   - `[Scala, ErrorProne] ErrorProneOneLiners`: Correcting error-prone one-liners
   - `[Scala, ErrorProne] VarInsteadOfVal`: Prevent the use of vars when possible
   - `[Scala, ErrorProne] ProhibitNullLit`: Prohibit null literal
+  - `[Scala, ErrorProne] ProhibitOptionGet`: Prohibit call to get on Options.
   - `[Scala, Completeness] ProhibitMagicNumber`: Prohibit magic numbers
   - `[Scala, Completeness] EnforceImplementation`: Prohibit lack of implementation (???)
   - `[Scala, Style] UnhealyOneLiner`: Return warning for some one nice liners (for example, having a case class with no body and no parameter is not really interesting, better use a case object)!
@@ -132,7 +133,7 @@ The apply method uses the TQL library. For more details on how to use TQL, see t
 ```scala
 case class Message(
   message: String,
-  originTree: scala.meta.Tree,
+  originTree: scala.meta.Tree
 )
 ```
 
