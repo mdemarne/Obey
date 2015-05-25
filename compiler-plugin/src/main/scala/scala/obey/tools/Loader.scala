@@ -1,19 +1,20 @@
 package scala.obey.tools
 
+import scala.meta.semantic.Context
+
 import scala.obey.model.Rule
 
-import scala.meta.semantic.Context
 import scala.util.{ Try, Failure, Success }
+import scala.collection.JavaConversions._
 
 import java.io._
 import java.net._
 import java.util.zip.{ZipFile, ZipEntry}
 
-import scala.collection.JavaConversions._
-
 /* Getting all rules, depending if they are defined as objects or classes (generating new instances) */
 class Loader(root: File, context: Context) {
 
+  /* Loading rule if the root specified is a directory */
   def loadRulesFromDir: List[Rule] = {
     val classLoader = new URLClassLoader(Array(root.toURI.toURL), getClass.getClassLoader)
     def load(dir: File): List[Class[_]] = {
@@ -35,6 +36,7 @@ class Loader(root: File, context: Context) {
     generateRuleInstances(load(root))
   }
 
+  /* loading rules if the specified root is a jar */
   def loadRulesFromJar: List[Rule] = {
     val classLoader = new URLClassLoader(Array(new URL(s"jar:file:${root.getPath}!/")), getClass.getClassLoader)
     val zip = new ZipFile(root)
@@ -44,6 +46,7 @@ class Loader(root: File, context: Context) {
     generateRuleInstances(classes)
   }
 
+  /* From all classes loaded, fetch the rule instances, either as object or instance (instantiate them with context if required) */
   private def generateRuleInstances(classes: List[Class[_]]): List[Rule] = {
     val ruleClasses = classes.filter(c => classOf[Rule].isAssignableFrom(c))
     ruleClasses map { c =>

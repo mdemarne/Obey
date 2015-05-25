@@ -7,6 +7,7 @@ import scala.util.parsing.combinator.RegexParsers
 
 import java.io.StringReader
 
+/* Parser used to select specific sets of rules to load */
 object SetParser extends RegexParsers {
   //lexical.delimiters ++= List("+", "-", ",", "{","}", ";", "*")
 

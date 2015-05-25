@@ -3,6 +3,9 @@ package scala.obey.tools
 import scala.obey.model.Rule
 import scala.obey.model._
 
+/* Options defined by the user. This class stores the state in witch Obey should be 
+ * executed for the current compilation scheme.
+ */
 object UserOptions {
 
   /* Hold a list of rules, either to apply (positive) or to discard (negative) */
@@ -63,10 +66,9 @@ object UserOptions {
     case _ => /* Nothing to do */
   }
 
-  override def toString = {
-    optMap.mkString("\n")
-  }
+  override def toString = optMap.mkString("\n")
 
+  /* Disallow the use of all rules */
   def disallow: Unit = {
     fixes.use = false
     warnings.use = false

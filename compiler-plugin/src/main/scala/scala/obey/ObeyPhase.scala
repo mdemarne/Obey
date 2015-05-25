@@ -1,13 +1,13 @@
 package scala.obey
 
 import scala.meta.tql._
-
 import scala.meta._
 import scala.obey.model._
 import scala.obey.tools._
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.{PluginComponent => NscPluginComponent}
 
+/* Definition of the Obey phase added to NSC */
 trait ObeyPhase {
   self: ObeyPlugin =>
 
@@ -43,7 +43,7 @@ trait ObeyPhase {
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
               // Persistence.archive(path) // TODO: uncomment
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path + ".test", res.tree.toString) // TODO: remove .test
+              Persistence.persist(path + ".test", res.tree.get.tokens.map(_.show[Code]).mkString) // TODO: remove .test
               res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }

@@ -1,8 +1,3 @@
-/**
- * 	Main component of the compiler plugin.
- *
- * 	@author Adrien Ghosn, Mathieu Demarne
- */
 package scala.obey
 
 import java.io._
@@ -16,6 +11,10 @@ import scala.tools.nsc.Global
 import scala.tools.nsc.plugins.{ PluginComponent => NscPluginComponent }
 
 /* TODO: move some listing logic outside of the compiler plugin if doable */
+
+/* Definition of the plugin for Obey. Used to process the various options and 
+ * trigger the compilation phase
+ */
 class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
   import global._
   implicit val context = Scalahost.mkGlobalContext(global)

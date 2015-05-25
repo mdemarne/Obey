@@ -25,6 +25,7 @@ package object model {
     override def toString = (tag :: others.toList) mkString ","
   }
 
+  /* Filtering rules based on a set of positive and negative tags */
   implicit class RichTags(lst: Set[Rule]) {
     def filterRules(pos: Set[Tag], neg: Set[Tag]): Set[Rule] = {
       def tagsToPattern(tags: Set[Tag]) = tags map (_.tag.toLowerCase.r.pattern)
@@ -37,6 +38,7 @@ package object model {
     }
   }
 
+  /* Provigind layout information, see comment above */
   private def getPos(t: Tree, path: String): scala.reflect.internal.util.Position = {
     def withContent(content: Array[Char]): scala.reflect.internal.util.Position = {
         val sourceFile = ScriptSourceFile(AbstractFile.getFile(path), content)
