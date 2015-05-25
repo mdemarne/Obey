@@ -8,84 +8,42 @@ object ObeyPlugin extends AutoPlugin {
   val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
   val obeyRulesJar = settingKey[String]("Path to jars containing compiled rules.")
 
-  lazy val obeyListRules =
-    Command.args("obey-list", "<args>") { (state: State, args) =>
-      if(args.isEmpty) {
+  def createObeyCommand(command: String)(settings: Seq[String] => Seq[Setting[_]]) = {
+    val baseSettings = Seq(
+      scalacOptions ++= Seq("-Ystop-after:obey"),
+      excludeFilter in unmanagedSources := "*.java")
+    Command.args(command, "<args>") { (state: State, args) =>
       Project.runTask(Keys.compile in Compile,
-        (Project extract state).append(Seq(
-          scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules"),
-          excludeFilter in unmanagedSources := "*.java"
-        ), state))
-      } else {
-        Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(
-            scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:ListRules:"+args.mkString),
-            excludeFilter in unmanagedSources := "*.java"
-          ), state))
-      }
+        (Project extract state)
+          .append(baseSettings ++ settings(args),
+            state))
       state
     }
+  }
 
-  lazy val obeyCheckCmd =
-    Command.args("obey-check", "<args>") { (state: State, args) =>
-      if (args.isEmpty) {
-        Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(
-            scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:dryrun"),
-            excludeFilter in unmanagedSources := "*.java"
-          ), state))
-      } else {
-        Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(
-            obeyWarnRules := args.mkString.replace(",", ";"),
-            scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:dryrun"),
-            excludeFilter in unmanagedSources := "*.java"
-          ), state))
-      }
-      state
-    }
+  lazy val obeyListRules = createObeyCommand("obey-list")(
+    (args: Seq[String]) => args match {
+      case Seq() => Seq(scalacOptions += "-P:obey:ListRules")
+      case _ => Seq(scalacOptions += "-P:obey:ListRules:" + args.mkString)
+    })
 
-  lazy val obeyFixCmd =
-    Command.args("obey-fix", "<args>") { (state: State, args) =>
-      if (args.isEmpty) {
-        Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(
-            obeyWarnRules := "--",
-            scalacOptions ++= Seq("-Ystop-after:obey"),
-            excludeFilter in unmanagedSources := "*.java"
-          ), state))
-      } else {
-        Project.runTask(Keys.compile in Compile,
-          (Project extract state).append(Seq(
-            obeyFixRules := args.mkString.replace(",", ";"),
-            obeyWarnRules := "--",
-            scalacOptions ++= Seq("-Ystop-after:obey"),
-            excludeFilter in unmanagedSources := "*.java"
-          ), state))
-      }
-      state
-    }
+  lazy val obeyCheckCmd = createObeyCommand("obey-check")(
+    (args: Seq[String]) => args match {
+      case Seq() => Seq(scalacOptions += "-P:obey:dryrun")
+      case _ => Seq(scalacOptions += "-P:obey:dryrun", obeyWarnRules := args.mkString.replace(",", ";"))
+    })
 
-    lazy val obeyFixDryRunCmd =
-      Command.args("obey-fix-dryrun", "<args>") { (state: State, args) =>
-        if (args.isEmpty) {
-          Project.runTask(Keys.compile in Compile,
-            (Project extract state).append(Seq(
-              obeyWarnRules := "--",
-              scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:dryrun"),
-              excludeFilter in unmanagedSources := "*.java"
-            ), state))
-        } else {
-          Project.runTask(Keys.compile in Compile,
-            (Project extract state).append(Seq(
-              obeyFixRules := args.mkString.replace(",", ";"),
-              obeyWarnRules := "--",
-              scalacOptions ++= Seq("-Ystop-after:obey", "-P:obey:dryrun"),
-              excludeFilter in unmanagedSources := "*.java"
-            ), state))
-        }
-        state
-      }
+  lazy val obeyFixCmd = createObeyCommand("obey-fix")(
+    (args: Seq[String]) => args match {
+      case Seq() => Seq(obeyWarnRules := "--")
+      case _ => Seq(obeyWarnRules := "--", obeyFixRules := args.mkString.replace(",", ";"))
+    })
+
+  lazy val obeyFixDryRunCmd = createObeyCommand("obey-fix-dryrun")(
+    (args: Seq[String]) => args match {
+      case Seq() => Seq(obeyWarnRules := "--", scalacOptions += "-P:obey:dryrun")
+      case _ => Seq(obeyWarnRules := "--", obeyFixRules := args.mkString.replace(",", ";"), scalacOptions += "-P:obey:dryrun")
+    })
 
   override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
     obeyFixRules := "",
