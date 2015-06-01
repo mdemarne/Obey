@@ -5,6 +5,7 @@ import complete.DefaultParsers._
 object ObeyPlugin extends AutoPlugin {
   val obeyFixRules = settingKey[String]("List of tags to filter rewritting rules.")
   val obeyWarnRules = settingKey[String]("List of tags to filter warning rules.")
+  val obeyRules = settingKey[String]("List of tags to filter all rules. This overrides the more precise setup of obeyFixRules and obeyWarnRules.")
   val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")
   val obeyRulesJar = settingKey[String]("Path to jars containing compiled rules.")
 
@@ -48,13 +49,20 @@ object ObeyPlugin extends AutoPlugin {
   override lazy val projectSettings: Seq[sbt.Def.Setting[_]] = Seq(
     obeyFixRules := "",
     obeyWarnRules := "+{Scala}-{Dotty}",
+    obeyRules := "",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
     obeyRulesJar := "", // No default jar
     commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyFixDryRunCmd, obeyListRules),
     addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
     scalacOptions ++= Seq(
-      "-P:obey:fixes:" + obeyFixRules.value,
-      "-P:obey:warnings:" + obeyWarnRules.value,
+      "-P:obey:fixes:" + (obeyRules.value match {
+        case "" => obeyFixRules.value
+        case r => r
+      }),
+      "-P:obey:warnings:" + (obeyRules.value match {
+        case "" => obeyWarnRules.value
+        case r => r
+      }),
       "-P:obey:obeyRulesDir:" + obeyRulesDir.value,
       "-P:obey:obeyRulesJar:" + obeyRulesJar.value).filterNot(x => x.endsWith(":")))
 }

@@ -42,7 +42,6 @@ In order to use Obey as an SBT autoplugin, use the following line:
 ```scala
 addSbtPlugin("com.github.mdemarne" %% "sbt-obey" % "0.1­0-SNAPSHOT")
  ```
-
 and
 ```scala
 lazy val myProject = Project(...) enablePlugins(ObeyPlugin)
@@ -50,10 +49,23 @@ lazy val myProject = Project(...) enablePlugins(ObeyPlugin)
 
 You can then set some setting keys in your project properties in order to select the rule tags you want to apply. The syntax used is the same as for the compiler plugin:
 
-- `val obeyFixRules = settingKey[String]("List of tags and names to filter rewritting rules.")`
-- `val obeyWarnRules = settingKey[String]("List of tags and names to filter warning rules.")`
+- `val obeyRules = settingKey[String]("List of tags to filter all rules.")`
 - `val obeyRulesDir = settingKey[String]("Path to .class defined by the user.")`
 - `val obeyRulesJar = settingKey[String]("Path to jars containing compiled rules.")
+
+And if you would like to be more precise, you can specify the tags for the fixing rules and the checking rules separately. This overrides the more precise setup of obeyFixRules and obeyWarnRules:
+
+- `val obeyFixRules = settingKey[String]("List of tags and names to filter rewritting rules.")`
+- `val obeyWarnRules = settingKey[String]("List of tags and names to filter warning rules.")`
+
+For example:
+```scala
+lazy val root = (project in file(".")).
+  settings (
+    ObeyPlugin.obeyRules := "+{Scala*} - {Completeness*} - {Dotty*} - {Mine*}",
+    ObeyPlugin.obeyRulesJar := "~/home/me/my/jar/rules.jar"
+  ) enablePlugins(ObeyPlugin)
+```
 
 You can the run obey in different flavours:
 
@@ -61,7 +73,7 @@ You can the run obey in different flavours:
 - `obey-fix`: will fix the source code based on the fixing rules
 - `obey-fix-dryrun`: will print warnings for the fixing rules, without modifying the source code.
 
-For an example of how to use Obey, refer to the [Obey-examples](https://github.com/mdemarne/Obey-examples) project.
+By default, Obey applies all warning rules for the tag `Scala` and none for the fixing rules. For a real example of how to use Obey, refer to the [Obey-examples](https://github.com/mdemarne/Obey-examples) project.
 
 ## Automatically add default rules
 
@@ -145,7 +157,7 @@ The `message` is the string that will be printed, the `originTree` is the subtre
 - Write a transformation rule example that can shown as a demo as well.
 - Run obey on large scale project (w/o XML! and Java weird stuffs).
   - Did not receive anything from https://stackoverflow.com/questions/30025596/stopping-compilation-after-a-compiler-plugin-using-play so far.
-- Having only one key to select rule to run (mix warn/fix - differentiated at runtime).
+- DONE: Having only one key to select rule to run (mix warn/fix - differentiated at runtime).
 
 - DONE: Update scalameta to be able to add back root comments using source
 - DONE: Cleanup the SBT plugin to avoid having too much redundancy in it.
