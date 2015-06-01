@@ -48,7 +48,7 @@ package object model {
     }
     t.input match {
       case in: Input.File => withContent(in.chars)
-      case in: Input.String => withContent(in.chars)
+      case in: Input.String =>withContent(in.chars)
       case _ => NoPosition
     }
   }
