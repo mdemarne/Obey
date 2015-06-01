@@ -3,7 +3,7 @@ package scala.obey.model
 import scala.meta.tql._
 
 /* Rule implementation definition */
-trait Rule {
+sealed trait Rule {
 
   def description: String
 
@@ -14,5 +14,8 @@ trait Rule {
     val name = this.getClass.getName.split("\\$").last.split('.').last
     s"$name ($description), tags: ($tags)"
   }
-  
+
 }
+
+trait FixRule extends Rule
+trait WarnRule extends Rule

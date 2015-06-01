@@ -1,17 +1,23 @@
 package scala.obey
 
-import scala.meta.{ Origin, Input }
+import scala.meta._
 
 import scala.annotation.StaticAnnotation
 import scala.reflect.internal.util.{ NoPosition, RangePosition, ScriptSourceFile }
 import scala.reflect.runtime.{ currentMirror => cm, universe => ru }
 import scala.reflect.io.AbstractFile
 
+import scala.meta.dialects.Scala211 // TODO: pass that as a parameter, since it might run on Dotty.
+
 package object model {
 
-  /* Message type */
-  case class Message(message: String, originTree: scala.meta.Tree) {
-    val position = getPos(originTree)
+  /** Message type returned by applying a rule */
+  case class Message(message: String, originTree: Tree) {
+    // TODO: temporary get positions passing the source file.
+    // This will be removed once trees coming from scalac will be enhanced to contain
+    // layout information (e.g. tokens, etc).
+    // See https://github.com/scalameta/scalahost/pull/87 and https://github.com/scalameta/scalahost/pull/93 for details.
+    def positionIn(path: String) = getPos(originTree, path)
   }
 
   /* Represents the tags used to handle the rule filtering */
@@ -19,6 +25,7 @@ package object model {
     override def toString = (tag :: others.toList) mkString ","
   }
 
+  /* Filtering rules based on a set of positive and negative tags */
   implicit class RichTags(lst: Set[Rule]) {
     def filterRules(pos: Set[Tag], neg: Set[Tag]): Set[Rule] = {
       def tagsToPattern(tags: Set[Tag]) = tags map (_.tag.toLowerCase.r.pattern)
@@ -31,12 +38,18 @@ package object model {
     }
   }
 
-  private def getPos(t: scala.meta.Tree): scala.reflect.internal.util.Position = {
-    t.origin.input match {
-      case Input.None => NoPosition
-      case in: Input.File =>
-        val sourceFile = ScriptSourceFile(AbstractFile.getFile(in.f.getCanonicalPath), in.content)
-        new RangePosition(sourceFile, t.origin.start, t.origin.start, t.origin.end)
+  /* Provigind layout information, see comment above */
+  private def getPos(t: Tree, path: String): scala.reflect.internal.util.Position = {
+    def withContent(content: Array[Char]): scala.reflect.internal.util.Position = {
+        val sourceFile = ScriptSourceFile(AbstractFile.getFile(path), content)
+        val start = t.position.start.offset
+        val end = t.position.end.offset
+        new RangePosition(sourceFile, start, start, end)
+    }
+    t.input match {
+      case in: Input.File => withContent(in.chars)
+      case in: Input.String =>withContent(in.chars)
+      case _ => NoPosition
     }
   }
 

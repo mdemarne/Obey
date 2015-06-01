@@ -1,8 +1,3 @@
-/**
- * 	Main component of the compiler plugin.
- *
- * 	@author Adrien Ghosn, Mathieu Demarne
- */
 package scala.obey
 
 import java.io._
@@ -16,6 +11,10 @@ import scala.tools.nsc.Global
 import scala.tools.nsc.plugins.{ PluginComponent => NscPluginComponent }
 
 /* TODO: move some listing logic outside of the compiler plugin if doable */
+
+/* Definition of the plugin for Obey. Used to process the various options and 
+ * trigger the compilation phase
+ */
 class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
   import global._
   implicit val context = Scalahost.mkGlobalContext(global)
@@ -43,13 +42,17 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
         /* Rule directory */
         case _ if opt.startsWith("obeyRulesDir:") =>
-          val rulesDir = opt.stripPrefix("obeyRulesDir:")
-          UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromDir.toSet
+          val rulesDirs = opt.stripPrefix("obeyRulesDir:").split(";")
+          rulesDirs.foreach { rulesDir =>
+            UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromDir.toSet
+          }
 
         /* Rule jar */
-        case _ if opt.startsWith("obeyRulesjar:") =>
-          val rulesDir = opt.stripPrefix("obeyRulesJar:")
-          UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromJar.toSet
+        case _ if opt.startsWith("obeyRulesJar:") =>
+          val rulesDirs = opt.stripPrefix("obeyRulesJar:").split(";")
+          rulesDirs.foreach { rulesDir =>
+            UserOptions.rules ++= new Loader(new File(rulesDir), context).loadRulesFromJar.toSet
+          }
 
         /* Processing options */
         case _ if UserOptions.optMap.keys.exists(s => opt.startsWith(s)) =>
@@ -69,6 +72,9 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
           if (!warnings.isEmpty) reporter.info(NoPosition, "Warning Rules:\n" + warnings.mkString("\n"), true)
           if (!fixes.isEmpty) reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
 
+        case _ if opt.equals("dryrun") =>
+          UserOptions.dryrun = true
+
         case othr =>
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")
       }
@@ -81,9 +87,10 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
   override val optionsHelp: Option[String] = Some("""
     | -P:obey:
-    |   fix:                Specifies filters for format
-    |   warn:               Specifies filter for warnings
-    |   addRules:           Specifies user defined rules
+    |   fixes:              Specifies filters for format
+    |   warning:            Specifies filter for warnings
+    |   addRulesDir:        Specifies user defined rules
+    |   addRulesJar:        Specifies a jar containing rules
     |   ListRules           Lists the rules to be used in the plugin
     |   ListRules: -all     Lists all the rules available
     |

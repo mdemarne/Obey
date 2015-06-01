@@ -1,15 +1,13 @@
 package scala.obey
 
 import scala.meta.tql._
-
 import scala.meta._
 import scala.obey.model._
 import scala.obey.tools._
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.{PluginComponent => NscPluginComponent}
-import scala.meta.dialects.Dotty
-import scala.meta.ui._
 
+/* Definition of the Obey phase added to NSC */
 trait ObeyPhase {
   self: ObeyPlugin =>
 
@@ -29,12 +27,7 @@ trait ObeyPhase {
 
       def apply(unit: CompilationUnit) {
         val path = unit.source.path
-        val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
-
-        // TODO: this should be done by scalahost ConvertPhase
-        /* Getting original tokens from source */
-        val content = unit.source.content.mkString("")
-        val originTokens = content.tokens
+        val originTree = unit.body.metadata("scalametaSyntactic").asInstanceOf[scala.meta.Tree]
 
         /* Applying warnings */
         val simpleWarnings: List[Message] = UserOptions.getWarnings() match {
@@ -47,16 +40,15 @@ trait ObeyPhase {
           case lst if lst.isEmpty => Nil
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
-            if (res.tree.isDefined && !res.result.isEmpty) {
-              Persistence.archive(path)
-              val newTokens = formatter.Merge(originTokens, originTree, res.tree.get)
+            if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
+              // Persistence.archive(path) // TODO: uncomment
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path, formatter.Print(newTokens))
-              res.result.map(m => Message("[CORRECTED] " + m.message, m.originTree))
+              Persistence.persist(path + ".test", res.tree.get.tokens.map(_.show[Code]).mkString) // TODO: remove .test
+              res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }
 
-        (simpleWarnings ++ fixWarnings).foreach(m => reporter.warning(m.position, m.message))
+        (simpleWarnings ++ fixWarnings).foreach(m => reporter.warning(m.positionIn(path), m.message))
       }
     }
   }

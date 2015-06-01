@@ -2,6 +2,7 @@ package scala.obey.tools
 
 import java.io.{BufferedWriter, File, FileWriter, IOException}
 
+/* Source management module archiving and updating scala files */
 object Persistence {
 
   /* Renames the file as .scala.old */
