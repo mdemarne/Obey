@@ -142,9 +142,10 @@ The `message` is the string that will be printed, the `originTree` is the subtre
 - Adding rules not as a library dependency, but as a library dependency for Obey only.
 - Moving some rule logic outside the compiler plugin (e.g. `obey-list` should not trigger the compiler).
   - Rules that do not require semantic information could even be run outside of the compiler plugin, but this makes it less obvious. It will need to be thought through a bit more.
-DONE - Cleanup the SBT plugin to avoid having too much redundancy in it.
 - Write a transformation rule example that can shown as a demo as well.
 - Run obey on large scale project (w/o XML! and Java weird stuffs).
   - Did not receive anything from https://stackoverflow.com/questions/30025596/stopping-compilation-after-a-compiler-plugin-using-play so far.
 - Having only one key to select rule to run (mix warn/fix - differentiated at runtime).
-- Update scalameta to be able to add back root comments using source
+
+- DONE: Update scalameta to be able to add back root comments using source
+- DONE: Cleanup the SBT plugin to avoid having too much redundancy in it.
