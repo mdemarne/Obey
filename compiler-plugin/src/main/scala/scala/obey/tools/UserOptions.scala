@@ -40,7 +40,12 @@ object UserOptions {
 
   /* All methods to get the correct rules to apply */
   def getFixes(allowedToRunOnly: Boolean = true): Set[Rule] = {
-    (if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules).filter(_.isInstanceOf[FixRule])
+    (if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules).filter(s => s.isInstanceOf[FixRule] && !s.isInstanceOf[StatRule])
+  }
+
+  /* All methods corresponding to statistic rules. Note that statRules are extension ot WarnRules. */
+  def getStats(allowedToRunOnly: Boolean = true): Set[Rule] = {
+    (if(allowedToRunOnly) fixes.getAllowedRules else fixes.getRules).filter(s => s.isInstanceOf[StatRule])
   }
 
   /* Avoids traversing the tree twice for format and warnings */

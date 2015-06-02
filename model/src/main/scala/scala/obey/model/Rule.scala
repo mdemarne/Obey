@@ -18,4 +18,5 @@ sealed trait Rule {
 }
 
 trait FixRule extends Rule
+trait StatRule extends FixRule
 trait WarnRule extends Rule

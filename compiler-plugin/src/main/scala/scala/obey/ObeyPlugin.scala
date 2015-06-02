@@ -62,15 +62,17 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
         case _ if regexp.matcher(opt).matches =>
           UserOptions.disallow /* Disallow all rules, this is not applying anything */
           reporter.info(NoPosition, "List of Rules available:", true)
-          reporter.info(NoPosition, UserOptions.rules.mkString("\n"), true)
+          reporter.info(NoPosition, UserOptions.rules.mkString("\t", "\n\t", ""), true)
 
         /* Listing of a set of available rules */
         case _ if opt.equals("ListRules") =>
           UserOptions.disallow /* Disallow all rules, this is not applying anything */
           val warnings = UserOptions.getWarnings(allowedToRunOnly = false)
+          val stats = UserOptions.getStats(allowedToRunOnly = false)
           val fixes = UserOptions.getFixes(allowedToRunOnly = false)
-          if (!warnings.isEmpty) reporter.info(NoPosition, "Warning Rules:\n" + warnings.mkString("\n"), true)
-          if (!fixes.isEmpty) reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\n"), true)
+          if (!warnings.isEmpty) reporter.info(NoPosition, "Warning Rules:\n" + warnings.mkString("\t", "\n\t", ""), true)
+          if (!stats.isEmpty) reporter.info(NoPosition, "Statistic Rules:\n" + stats.mkString("\t", "\n\t", ""), true)
+          if (!fixes.isEmpty) reporter.info(NoPosition, "Fixing Rules:\n" + fixes.mkString("\t", "\n\t", ""), true)
 
         case _ if opt.equals("dryrun") =>
           UserOptions.dryrun = true
