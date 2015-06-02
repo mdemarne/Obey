@@ -1,4 +1,4 @@
-package health
+package statistics
 
 import scala.meta.tql._
 
@@ -9,16 +9,19 @@ import scala.obey.model._
 
   def description = "Collecting general statistics about the current project"
 
-  def foundTryCatch(t: Tree) = Message("trycatch-stat", t)
-  def foundReturn(t: Tree) = Message("return-stat", t)
-  def foundWhile(t: Tree) = Message("do-while-stat", t)
+  def foundTryCatch(t: Tree) = Message("trycatch", t)
+  def foundReturn(t: Tree) = Message("return", t)
+  def foundWhile(t: Tree) = Message("do-while", t)
   
-  def foundDef(t: Tree) = Message("def-stat", t)
-  def foundVal(t: Tree) = Message("val-stat", t)
-  def foundVar(t: Tree) = Message("var-stat", t)
-  def foundTrait(t: Tree) = Message("trait-stat", t)
-  def foundClass(t: Tree) = Message("class-stat", t)
-  def foundObject(t: Tree) = Message("object-stat", t)
+  def foundDef(t: Tree) = Message("def", t)
+  def foundVal(t: Tree) = Message("val", t)
+  def foundVar(t: Tree) = Message("var", t)
+  def foundTrait(t: Tree) = Message("trait", t)
+  def foundClass(t: Tree) = Message("class", t)
+  def foundObject(t: Tree) = Message("object", t)
+  def foundList(t: Tree) = Message("list", t)
+  def foundSet(t: Tree) = Message("set", t)
+  def foundPartialFunction(t: Tree) = Message("partialFunction", t)
 
   def apply = collect {
     case t: Defn.Def  => foundDef(t)
@@ -36,5 +39,9 @@ import scala.obey.model._
     case t: Term.Return => foundReturn(t)
     case t: Term.While => foundWhile(t)
     case t: Term.Do => foundWhile(t)
+    case t: Term.Name if t.value == "List" => foundList(t)
+    case t: Term.Name if t.value == "Set" =>  foundSet(t)
+    case t: Term.PartialFunction => foundPartialFunction(t)
+
   }.topDown
 }

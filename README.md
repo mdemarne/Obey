@@ -105,6 +105,8 @@ Corresponding tags are put into brackets.
   - `[Dotty] ExplicitImplicitTypes`: Forbidding implicit types
   - `[Dotty] EarlyInitializer`: Early initializers are not supported in Dotty
   - `[Dotty] Varargs`: Varargs are not supported in Dotty
+- Transformations (early prototype):
+  - `[Scala-play-migration23] Play23GlobalControllerMigration`: Migrate the global controller of a play application to the newer version of Play (2.3)
 
 ### Coming rules
 
