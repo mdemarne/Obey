@@ -121,7 +121,7 @@ Obey also aims to propose transformation rules (e.g. to move from one version of
 
 You can add rules either to your own project build (as shown in the [Obey-examples](https://github.com/mdemarne/Obey-examples) project.) or propose pull request to this project.
 
-A rule either extends the `WarnRule` trait or the `FixRule` trait, depending of its nature.
+A rule either extends the `WarnRule` trait, the `StatRule` trait or the `FixRule` trait, depending of its nature. `WarnRule` simply output a message, but no modification done to the trees using TQL are persisted. `StatRule` behave the same way, but the messages are counted by message string, and output at the end of the compilation process as a table showing statistics. `FixRule` on the other hand will see any modifications persisted in the code when run with `obey-fix`.
 
 A rule has the following structure:
 
