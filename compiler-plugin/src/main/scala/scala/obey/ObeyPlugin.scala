@@ -33,6 +33,8 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
     UserOptions.rules ++= new Loader(new File(path), context).loadRulesFromJar.toSet
   }
 
+
+
   /* Processes the options for the plugin */
   override def processOptions(options: List[String], error: String => Unit) {
     options.foreach {
@@ -76,6 +78,9 @@ class ObeyPlugin(val global: Global) extends PluginBase with ObeyPhase {
 
         case _ if opt.equals("dryrun") =>
           UserOptions.dryrun = true
+
+        case _ if opt.startsWith("sourceCount:") =>
+          UserOptions.sourceCount = opt.stripPrefix("sourceCount:").toInt
 
         case othr =>
           reporter.error(NoPosition, "Bad option for obey plugin: '" + opt + "'")

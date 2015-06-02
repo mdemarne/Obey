@@ -25,9 +25,12 @@ trait ObeyPhase {
 
     def newPhase(prev: Phase): Phase = new StdPhase(prev) {
 
+      /* Keeps track of the number of compilationUnit. If the last one is done, it outputs the statistic results. */
+      var compiledCount = 0
       var stats: List[Message] = Nil
 
       def apply(unit: CompilationUnit) {
+        compiledCount += 1
         val path = unit.source.path
         val originTree = unit.body.metadata("scalametaSyntactic").asInstanceOf[scala.meta.Tree]
 
@@ -57,7 +60,7 @@ trait ObeyPhase {
         }
         stats ++= localStats /* Adding to the global count */
 
-        if (!stats.isEmpty) {
+        if (!stats.isEmpty && compiledCount == UserOptions.sourceCount) {
           reporter.info(NoPosition, "Global statistics:", true)
           val groupedStats = stats.groupBy(m => m.message)
           val max = groupedStats.map(_._1.length).max

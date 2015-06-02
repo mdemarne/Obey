@@ -63,6 +63,7 @@ object ObeyPlugin extends AutoPlugin {
         case "" => obeyWarnRules.value
         case r => r
       }),
+      "-P:obey:sourceCount:" + (unmanagedSources in Compile).value.filter(_.toString.endsWith(".scala")).length,
       "-P:obey:obeyRulesDir:" + obeyRulesDir.value,
       "-P:obey:obeyRulesJar:" + obeyRulesJar.value).filterNot(x => x.endsWith(":")))
 }

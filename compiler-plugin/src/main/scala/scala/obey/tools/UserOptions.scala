@@ -8,6 +8,9 @@ import scala.obey.model._
  */
 object UserOptions {
 
+  /* Should be updated when the compiler plugin is triggered. Avoid printing statistic for the compilation of each file. */
+  var sourceCount = -1
+
   /* Hold a list of rules, either to apply (positive) or to discard (negative) */
   case class TagHolder(var pos: Set[Tag], var neg: Set[Tag], var use: Boolean) {
     override def toString: String = s"+{${pos.mkString(",")}} - {${neg.mkString(",")}}"
