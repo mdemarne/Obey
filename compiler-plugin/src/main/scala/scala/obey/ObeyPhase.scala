@@ -46,9 +46,9 @@ trait ObeyPhase {
           case lst =>
             val res = lst.map(_.apply).reduce((r1, r2) => r1 + r2)(originTree)
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
-              // Persistence.archive(path) // TODO: uncomment
+              Persistence.archive(path)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path + ".test", res.tree.get.tokens.map(_.show[Code]).mkString) // TODO: remove .test
+              Persistence.persist(path, res.tree.get.tokens.map(_.show[Code]).mkString)
               res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }

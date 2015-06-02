@@ -4,9 +4,7 @@ import scala.meta.tql._
 
 /* Rule implementation definition */
 sealed trait Rule {
-
   def description: String
-
   def apply: Matcher[List[Message]]
 
   override def toString = {
@@ -14,7 +12,6 @@ sealed trait Rule {
     val name = this.getClass.getName.split("\\$").last.split('.').last
     s"$name ($description), tags: ($tags)"
   }
-
 }
 
 trait FixRule extends Rule

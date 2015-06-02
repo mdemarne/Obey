@@ -101,6 +101,8 @@ Corresponding tags are put into brackets.
   - `[Scala, Completeness] ProhibitMagicNumber`: Prohibit magic numbers
   - `[Scala, Completeness] EnforceImplementation`: Prohibit lack of implementation (???)
   - `[Scala, Style] UnhealyOneLiner`: Return warning for some one nice liners (for example, having a case class with no body and no parameter is not really interesting, better use a case object)!
+- Statistics:
+  - `[Scala, Stats] GlobalStasts`:Collects general statistics about the current project
 - dotty (rules specific to Dotty):
   - `[Dotty] ExplicitImplicitTypes`: Forbidding implicit types
   - `[Dotty] EarlyInitializer`: Early initializers are not supported in Dotty

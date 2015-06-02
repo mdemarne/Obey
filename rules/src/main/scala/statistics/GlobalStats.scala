@@ -5,9 +5,9 @@ import scala.meta.tql._
 import scala.meta.internal.ast._
 import scala.obey.model._
 
-@Tag("Scala", "Stats") object GlobalStatistics extends StatRule {
+@Tag("Scala", "Stats") object GlobalStats extends StatRule {
 
-  def description = "Collecting general statistics about the current project"
+  def description = "Collects general statistics about the current project."
 
   def foundTryCatch(t: Tree) = Message("trycatch", t)
   def foundReturn(t: Tree) = Message("return", t)

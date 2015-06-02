@@ -7,7 +7,7 @@ import scala.obey.model._
 
 @Tag("Scala", "Completeness") object EnforceImplementation extends WarnRule {
 
-  def description = "Enforce all implementation to be complete."
+  def description = "Force all implementation to be complete."
 
   def apply = collect {
     case t: Term.Name if t.value == "???" =>
