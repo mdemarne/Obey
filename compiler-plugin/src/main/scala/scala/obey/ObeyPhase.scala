@@ -60,7 +60,7 @@ trait ObeyPhase {
         }
         stats ++= localStats /* Adding to the global count */
 
-        if (!stats.isEmpty /*&& compiledCount == UserOptions.sourceCount*/) {
+        if (!stats.isEmpty && compiledCount == UserOptions.sourceCount) {
           reporter.info(NoPosition, "Global statistics:", true)
           val groupedStats = stats.groupBy(m => m.message)
           val max = groupedStats.map(_._1.length).max
