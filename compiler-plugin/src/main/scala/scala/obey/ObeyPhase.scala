@@ -48,7 +48,7 @@ trait ObeyPhase {
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
               Persistence.archive(path)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path, res.tree.get.tokens.map(_.show[Code]).mkString)
+              Persistence.persist(path, res.tree.get.toString) // .tokens.map(_.show[Code]).mkString) // TODO: use tokens!
               res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }
