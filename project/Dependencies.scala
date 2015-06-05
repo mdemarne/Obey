@@ -13,4 +13,6 @@ object Dependencies {
   lazy val metafoundation = "org.scalameta" %% "scalameta-foundation" % metaVersion
   
   lazy val scalatest = "org.scalatest" %% "scalatest" % "2.1.3" % "test"
+
+  lazy val parsermacros = "plugin" %% "plugin" % "0.1.0-SNAPSHOT"
 }
