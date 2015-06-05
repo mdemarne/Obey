@@ -12,19 +12,17 @@ import scala.meta.internal.parsers.Helpers._
 import scala.compat.Platform.EOL
 import scala.meta.internal.tokenizers.keywords
 
-import scala.meta.tokenquasiquotes._
-
 import scala.language.implicitConversions
 
 import scala.annotation.tailrec
 
 // TODO: this infers tokens for the Scala211 dialect due to token quasiquotes (the dialect needs to be explicitly imported). It should be changed in the future.
-object inferTokens {
+object MyInferTokens {
 
   /* shadowing .tokens on every tree */
   implicit class richTree(t: Tree) {
     def myTokens = t.tokens match {
-      case Seq() => inferTokens(t, None)
+      case Seq() => MyInferTokens(t, None)
       case seq => seq
     }
   }

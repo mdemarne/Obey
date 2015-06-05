@@ -9,8 +9,7 @@ object build extends Build {
   lazy val commonDependencies = Seq(
     libraryDependencies <++= (scalaVersion)(sv => Seq(
       Dependencies.meta,
-      Dependencies.scalatest,
-      Dependencies.parsermacros))
+      Dependencies.scalatest))
   )
 
   lazy val pluginCompiler = Project(
