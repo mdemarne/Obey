@@ -61,11 +61,13 @@ trait ObeyPhase {
         stats ++= localStats /* Adding to the global count */
 
         if (!stats.isEmpty && compiledCount == UserOptions.sourceCount) {
-          reporter.info(NoPosition, "Global statistics:", true)
-          val groupedStats = stats.groupBy(m => m.message)
+          reporter.info(NoPosition, "Global Statistics:", true)
+          val groupedStats = stats.groupBy(m => m.message).toList.sortBy(-_._2.length)
           val max = groupedStats.map(_._1.length).max
           val firstLineSpaces = " " * (max - 4)
-          reporter.info(NoPosition, s"type$firstLineSpaces\tcount", true)
+          val legends = s"Type$firstLineSpaces\tCount"
+          reporter.info(NoPosition, legends, true)
+          reporter.info(NoPosition, "=" * (legends.length), true)
           groupedStats.foreach { m =>
             val spaces = " " * (max - m._1.length)
             reporter.info(NoPosition, s"${m._1}$spaces\t${m._2.size}", true)

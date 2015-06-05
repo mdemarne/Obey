@@ -9,7 +9,7 @@ import scala.obey.model._
 
   def description = "Collects general statistics about the current project."
 
-  def foundTryCatch(t: Tree) = Message("trycatch", t)
+  def foundTryCatch(t: Tree) = Message("try/catch", t)
   def foundReturn(t: Tree) = Message("return", t)
   def foundWhile(t: Tree) = Message("do-while", t)
   
@@ -22,6 +22,8 @@ import scala.obey.model._
   def foundList(t: Tree) = Message("list", t)
   def foundSet(t: Tree) = Message("set", t)
   def foundPartialFunction(t: Tree) = Message("partialFunction", t)
+
+  def foundPotOptGet(t: Tree) = Message("potential Option.get", t)
 
   def apply = collect {
     case t: Defn.Def  => foundDef(t)
@@ -42,6 +44,11 @@ import scala.obey.model._
     case t: Term.Name if t.value == "List" => foundList(t)
     case t: Term.Name if t.value == "Set" =>  foundSet(t)
     case t: Term.PartialFunction => foundPartialFunction(t)
+
+
+    case Term.Apply(Term.Select(_, t @ Term.Name("get")), args) if args.size == 0 => foundPotOptGet(t)
+    case s @ Term.Select(_, t @ Term.Name("get")) if s.parent.map(!_.isInstanceOf[Term.Apply]).getOrElse(false) => foundPotOptGet(t)
+
 
   }.topDown
 }
