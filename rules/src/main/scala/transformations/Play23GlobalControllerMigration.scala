@@ -7,7 +7,11 @@ import scala.meta.tql._
 import scala.meta.internal.{ ast => impl }
 import scala.obey.model._
 
-@Tag("Scala-play-migration23", "Migration", "Demo") object Play23GlobalControllerMigration extends StatRule {
+/*
+ * TODO: Note that this rule is really really experimental and does not work as is in Obey, as Obey is not compatible
+ * with older version of play (2.1) due to the fact that this old version doest not support Scala 2.11.6.
+ */ 
+@Tag("Scala-play-migration23", "Migration", "Demo") object Play23GlobalControllerMigration extends FixRule {
 
   def description = "Migrate the global controller of a play application to the newer version of Play (2.3)"
 
