@@ -7,7 +7,7 @@ import scala.meta.tql._
 import scala.meta.internal.{ ast => impl }
 import scala.obey.model._
 
-@Tag("Scala-play-migration23") object Play23GlobalControllerMigration extends StatRule {
+@Tag("Scala-play-migration23", "Migration", "Demo") object Play23GlobalControllerMigration extends StatRule {
 
   def description = "Migrate the global controller of a play application to the newer version of Play (2.3)"
 
