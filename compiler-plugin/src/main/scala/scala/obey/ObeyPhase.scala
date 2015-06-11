@@ -6,7 +6,6 @@ import scala.obey.model._
 import scala.obey.tools._
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.{PluginComponent => NscPluginComponent}
-import scala.meta.internal.ui.MyInferTokens
 import scala.meta.dialects.Scala211
 
 /* Definition of the Obey phase added to NSC */
@@ -53,7 +52,7 @@ trait ObeyPhase {
             if (res.tree.isDefined && !res.result.isEmpty && !UserOptions.dryrun) {
               Persistence.archive(path)
               reporter.info(NoPosition, s"Persisting changes in $path.", true)
-              Persistence.persist(path, MyInferTokens(res.tree.get, Some(originTree)).map(_.show[Code]).mkString)
+              Persistence.persist(path, res.tree.get.tokens.map(_.show[Code]).mkString)
               res.result.map (m => Message("[FIXED] " + m.message, m.originTree))
             } else res.result
         }

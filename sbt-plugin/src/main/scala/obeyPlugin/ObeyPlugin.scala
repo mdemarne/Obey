@@ -11,12 +11,25 @@ object ObeyPlugin extends AutoPlugin {
 
   def createObeyCommand(command: String)(settings: Seq[String] => Seq[Setting[_]]) = {
     val baseSettings = Seq(
-      scalacOptions ++= Seq("-Ystop-after:obey"),
+      scalacOptions ++= Seq(
+        "-Ystop-after:obey",
+        "-P:obey:fixes:" + (obeyRules.value match {
+          case "" => obeyFixRules.value
+          case r => r
+        }),
+        "-P:obey:warnings:" + (obeyRules.value match {
+          case "" => obeyWarnRules.value
+          case r => r
+        }),
+        "-P:obey:sourceCount:" + (unmanagedSources in Compile).value.filter(_.toString.endsWith(".scala")).length,
+        "-P:obey:obeyRulesDir:" + obeyRulesDir.value,
+        "-P:obey:obeyRulesJar:" + obeyRulesJar.value
+        ).filterNot(x => x.endsWith(":")),
       excludeFilter in unmanagedSources := "*.java")
     Command.args(command, "<args>") { (state: State, args) =>
       Project.runTask(Keys.compile in Compile,
         (Project extract state)
-          .append(baseSettings ++ settings(args),
+          .append(baseSettings ++ settings(args)  ++ Seq(addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT")),
             state))
       state
     }
@@ -52,18 +65,6 @@ object ObeyPlugin extends AutoPlugin {
     obeyRules := "",
     obeyRulesDir := "project/rules/target/scala-2.11/classes/", // Default rule path, can be overridden.
     obeyRulesJar := "", // No default jar
-    commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyFixDryRunCmd, obeyListRules),
-    addCompilerPlugin("com.github.mdemarne" % "obey-compiler-plugin_2.11.6" % "0.1.0-SNAPSHOT"),
-    scalacOptions ++= Seq(
-      "-P:obey:fixes:" + (obeyRules.value match {
-        case "" => obeyFixRules.value
-        case r => r
-      }),
-      "-P:obey:warnings:" + (obeyRules.value match {
-        case "" => obeyWarnRules.value
-        case r => r
-      }),
-      "-P:obey:sourceCount:" + (unmanagedSources in Compile).value.filter(_.toString.endsWith(".scala")).length,
-      "-P:obey:obeyRulesDir:" + obeyRulesDir.value,
-      "-P:obey:obeyRulesJar:" + obeyRulesJar.value).filterNot(x => x.endsWith(":")))
+    commands ++= Seq(obeyCheckCmd, obeyFixCmd, obeyFixDryRunCmd, obeyListRules)
+  )
 }
