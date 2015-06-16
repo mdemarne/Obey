@@ -32,7 +32,7 @@ trait ObeyPhase {
       def apply(unit: CompilationUnit) {
         compiledCount += 1
         val path = unit.source.path
-        val originTree = unit.body.metadata("scalametaSyntactic").asInstanceOf[scala.meta.Tree]
+        val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
         /* Applying warnings */
         val simpleWarnings: List[Message] = UserOptions.getWarnings() match {
