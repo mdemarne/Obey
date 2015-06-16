@@ -14,7 +14,7 @@ trait ObeyPhase {
 
   object ObeyComponent extends NscPluginComponent {
     val global: self.global.type = self.global
-    implicit val context = Scalahost.mkGlobalContext(global)
+    implicit val context = Scalahost.mkGlobalContext[global.type](global)
 
     import global._
 
@@ -35,8 +35,8 @@ trait ObeyPhase {
         val path = unit.source.path
         val originTree = unit.source.content.parse[Source].asInstanceOf[Source] 
         // TODO: required, as the merge between tokens is not complete. Should be instead:
-        //unit.body.metadata("scalametaSyntactic").asInstanceOf[scala.meta.Tree]
         // Note: works only with syntactic informations then.
+        // val originTree = unit.body.metadata("scalameta").asInstanceOf[scala.meta.Tree]
 
         /* Applying warnings */
         val simpleWarnings: List[Message] = UserOptions.getWarnings() match {
